@@ -1,0 +1,62 @@
+---
+title: "Trust and compliance"
+description: "Risk, integrity, and regulatory posture."
+---
+
+Trust is the only product Path actually sells. Predictions are easy
+to publish; predictions that institutional allocators can act on
+require an integrity layer behind every number. This page documents
+that layer.
+
+## Phase 1 (read-only): no regulatory surface
+
+Path Phase 1 is an information layer. We do not custody funds, we
+do not execute transactions, and we do not present allocation
+guidance as a managed product. The user remains the decision-maker.
+This is the right starting point both for product reasons (wide
+top-of-funnel) and for regulatory reasons (zero surface today,
+clean runway to add it in Phase 2 with the appropriate framework).
+
+## Phase 2 (transaction-crafting): regulatory dependency
+
+Transaction crafting introduces a regulatory dependency that we are
+structuring against deliberately. The licensing route depends on the
+specific embedding partner's jurisdiction—a custodial earn surface
+in one jurisdiction may carry a different obligation profile than a
+modular rail layer in another. We engage on the regulatory framework
+inside each integration conversation rather than committing to a
+single global structure that will not fit every partner.
+
+## Risk + screening stack
+
+- **Sanctions screening** runs daily against Open Sanctions data plus
+  a commercial provider's API, applied at the pool level (pool's
+  associated treasury and audit-history addresses) and at the
+  allocator level (the wallet about to receive the recommendation).
+- **Pool-level risk** combines smart-contract risk scoring, oracle
+  staleness checks, governance-action history, and a native risk
+  model that scans pool jurisdiction against the embedding partner's
+  incorporation thresholds.
+- **Custodial integration** with a major institutional custody
+  partner is in sandbox today; production roll-out is sequenced with
+  the Phase 2 transaction-crafting work.
+
+## Audit roadmap
+
+- Continuous-loop accuracy verifier (live today) re-computes every
+  number on every Path surface from canonical SQL every 30 minutes.
+  Drift greater than the published tolerance pages our on-call and
+  auto-files a ticket.
+- Third-party smart-contract audit is scoped against the Phase 2
+  transaction-crafting deployment. Not applicable to Phase 1
+  read-only mode.
+- Annual SOC 2 type II is on the post-Phase-2 roadmap.
+
+## Data residency
+
+Live prediction data is hosted on managed Postgres infrastructure
+with encrypted backups, role-isolated access, and an audit log on
+every read. Partner-specific data (wallet contexts, allocation
+suggestions emitted to a specific partner) is segregated at the
+schema level. Self-host is available for partners with strict
+residency requirements.

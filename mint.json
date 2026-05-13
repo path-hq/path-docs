@@ -1,0 +1,65 @@
+{
+  "$schema": "https://mintlify.com/schema.json",
+  "name": "Path",
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg"
+  },
+  "favicon": "/favicon.svg",
+  "colors": {
+    "primary": "#3C8850",
+    "light": "#3C8850",
+    "dark": "#2A4A48",
+    "background": {
+      "light": "#EFE6D5",
+      "dark": "#0C1A1E"
+    }
+  },
+  "font": {
+    "headings": { "family": "Georgia" },
+    "body": { "family": "Inter" }
+  },
+  "topbarLinks": [
+    {
+      "name": "App",
+      "url": "https://app.pathprotocol.finance"
+    }
+  ],
+  "topbarCtaButton": {
+    "name": "Contact",
+    "url": "mailto:fares@pathprotocol.finance"
+  },
+  "anchors": [],
+  "navigation": [
+    {
+      "group": "Overview",
+      "pages": ["introduction"]
+    },
+    {
+      "group": "Product",
+      "pages": [
+        "core-concepts/three-phase-product",
+        "core-concepts/signal-mesh",
+        "core-concepts/accuracy",
+        "core-concepts/liquidity-impact"
+      ]
+    },
+    {
+      "group": "Integration",
+      "pages": [
+        "integrations/integration-shape",
+        "integrations/api-and-widget"
+      ]
+    },
+    {
+      "group": "Trust",
+      "pages": [
+        "compliance",
+        "contact"
+      ]
+    }
+  ],
+  "footerSocials": {
+    "x": "https://x.com/pathprotocolfi"
+  }
+}

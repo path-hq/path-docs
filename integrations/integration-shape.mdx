@@ -1,0 +1,78 @@
+---
+title: "Integration shape"
+description: "How Path slots into existing rails as a signal-driven strategy layer."
+---
+
+Path is designed to be embedded, not white-labelled. The product
+surface for institutional users is wherever they already manage
+their stablecoin balance—their custodial earn surface, their on-chain
+treasury platform, their modular rail layer. Path appears inside
+that surface as a strategy intelligence layer.
+
+## The strategy-manager pattern
+
+The integration pattern Path follows is the same one that drove most
+of the institutional curator/strategy growth on-chain in the last 18
+months: a third-party intelligence layer runs the strategy
+parameters on a rail provided by another protocol, the rail handles
+custody and execution, and the strategy provider earns a curator fee
+on capital deployed under its curation.
+
+The pattern works because it lets the rail focus on what it is good
+at (security, custody, on-chain execution, regulatory wrapping) and
+lets the strategy provider focus on what *it* is good at
+(intelligence, allocation, risk-adjusted optimisation). Path is the
+strategy provider; the rail is whatever modular layer the partner
+runs.
+
+## Modular para-block layer
+
+We see modular rail layers as the natural home for Path. The pattern:
+
+- A **yield-source para-block** wraps an external protocol and
+  exposes a standardised interface to the rail.
+- An **operational para-block** orchestrates capital *between* yield
+  sources based on a strategy. This is the slot Path occupies.
+
+Path's intelligence drives the operational para-block: when to
+re-balance, where to re-balance to, and with what conviction. The
+yield-source para-blocks handle the protocol-specific wiring.
+
+This is the cleanest separation of concerns we have seen, and it is
+how we are positioning Path for modular rail integrations.
+
+## Two surfaces
+
+<CardGroup cols={2}>
+  <Card title="API" icon="code">
+    REST + GraphQL endpoints serving the prediction stream, the
+    liquidity-impact context, the historical accuracy registry, and
+    the rebalance-cost estimator. Documented endpoints land at
+    `api.pathprotocol.finance/v1`.
+  </Card>
+  <Card title="Widget" icon="rectangle-list">
+    Drop-in React widget for embedding inside an existing earn or
+    treasury surface. Reads the connected wallet, calls Path's API,
+    renders the prediction + allocation suggestion + the break-even
+    panel. White-label-able to the embedding partner's design
+    system.
+  </Card>
+</CardGroup>
+
+## DON-signed signals
+
+For partners that require on-chain verifiability rather than
+off-chain API trust, Path publishes its prediction stream through a
+Chainlink Runtime Environment (CRE) workflow. The workflow runs in a
+decentralised oracle network, signs the prediction tuple `(pool_id,
+direction, confidence, predicted_apy, predicted_at)`, and posts the
+result on-chain.
+
+Any vault contract on any supported chain can read the signed signal
+with cryptographic guarantees. This converts the trust statement
+from "trust Path's off-chain compute" to "verifiable on-chain
+signal" without requiring Path to operate its own validator set.
+
+The DON-signed signal layer is the integration shape we recommend for
+any partner whose risk officer requires verifiability rather than
+operational trust.

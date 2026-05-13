@@ -1,0 +1,82 @@
+---
+title: "Liquidity impact"
+description: "Predicted APY after a deposit, not just predicted APY. Closes the question every institutional allocator asks first."
+---
+
+The single most common question we get from institutional allocators
+is some version of:
+
+> *"If this pool has $19M in TVL and I deposit $50M, the APY will
+> crunch. Does your model predict that?"*
+
+It is the right question. Predicting that a pool's APY trends from
+6% to 7% over the next 7 days is useless if a $50M deposit drops it
+back to 4% on entry. Liquidity-impact modelling is therefore a
+first-class concept inside Signal Mesh, not an afterthought.
+
+## What we surface
+
+Every prediction comes with a liquidity-impact context block that
+answers four questions for an allocator considering a deposit:
+
+<CardGroup cols={2}>
+  <Card title="Pool-share representation" icon="chart-pie">
+    For a hypothetical deposit of size *X*, what percentage of pool
+    TVL would you represent? Above 10% of TVL is a yellow flag; above
+    25% is a red flag.
+  </Card>
+  <Card title="Post-deposit APY estimate" icon="arrow-trend-down">
+    Using the protocol's actual rate mechanism (utilisation curve for
+    lending, swap-fee math for AMM-style yield, governance-set rate
+    for stability rails), we compute the APY the pool would settle at
+    immediately after your deposit lands.
+  </Card>
+  <Card title="Slippage band" icon="wave-square">
+    For pools that route through an AMM at deposit time, the expected
+    slippage on entry, derived from the live order-book / curve depth
+    snapshot.
+  </Card>
+  <Card title="Break-even horizon" icon="clock">
+    Combining the prediction-direction signal with the post-deposit
+    APY estimate and the gas cost of moving, the daemon outputs a
+    break-even horizon: "this move pays back in N days" where N
+    depends on direction confidence and deposit size.
+  </Card>
+</CardGroup>
+
+## How we predict it
+
+The post-deposit APY estimate is derived analytically from the rate
+mechanism rather than learned end-to-end. We invert the protocol's
+own rate formula given the current pool state and your deposit size.
+For lending pools that means the utilisation curve maps deposited
+supply to a borrow rate, which maps back to a lender APY via the
+reserve factor. For AMM-style yield pools the math is different but
+the principle is the same: the protocol's mechanism is public, so
+the post-deposit APY is computable, not predictable.
+
+What is *predictable* is the second-order effect: other allocators
+will respond to your deposit. The directional model captures that
+through the cohort-flow signal block (the percentage of deposits in
+the next 24h that historically follow large entries on similar
+pools).
+
+## Current performance
+
+The post-deposit APY estimate matches realised post-deposit APY
+within ~1 percentage point in 6 cases out of 10 on backtest data, and
+the gap shrinks materially when restricted to pools where Signal Mesh
+has high signal coverage. We continue to improve this surface with
+two specific work streams:
+
+- Wider cohort-flow data ingestion, particularly for institutional
+  allocators whose deposit clustering tells us more than the average
+  retail flow.
+- Per-protocol rate-mechanism specialists for the long tail of pools
+  with non-standard rate formulas.
+
+The honest framing for an institutional partner is that **Path is
+opinionated about whether you should move and gives you a defensible
+estimate of what your APY will look like after you move**. The
+combined directional + liquidity-impact view is what a Strategy
+Manager would consume.
