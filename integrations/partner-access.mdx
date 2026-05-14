@@ -1,0 +1,68 @@
+---
+title: "Partner access"
+description: "Path's intelligence layer is available to institutional partners on request."
+---
+
+Path's API is private. We do not publish open endpoints, rate-limited
+public keys, or self-serve developer tooling. Access is granted to
+institutional partners on a per-engagement basis after a partnership
+conversation.
+
+## Who this is for
+
+Partner access is designed for:
+
+- **Custodial earn surfaces** embedding Path's intelligence inside an
+  existing institutional product.
+- **Modular rail layers** integrating Path as a signal-driven
+  strategy manager.
+- **Asset managers** consuming the prediction stream alongside their
+  internal allocation models.
+- **On-chain vault contracts** consuming verifiable signed signals
+  for autonomous allocation logic.
+
+## Integration patterns
+
+When we open a partner engagement, we work with the partner to pick
+the integration shape that fits their stack:
+
+<CardGroup cols={2}>
+  <Card title="Widget embed" icon="rectangle-list">
+    A drop-in surface that renders Path's allocation intelligence
+    inside an existing earn or treasury product. Reads the
+    connected wallet context, presents the prediction, allocation
+    suggestion, and break-even panel. Styles inherit from the
+    embedding partner's design system.
+  </Card>
+  <Card title="Signal feed pull" icon="rss">
+    A server-to-server prediction feed for partners who want to
+    consume Path's output programmatically inside their own backend.
+    Useful for partners running their own allocation logic that
+    augments Path's signal with internal risk caps and policy rules.
+  </Card>
+  <Card title="Custodian webhook" icon="bell">
+    An event-driven push surface for custodians who want to receive
+    rebalance triggers and regime-change notifications inline with
+    their existing operational tooling.
+  </Card>
+  <Card title="DON-signed signals" icon="signature">
+    For partners that require on-chain verifiability rather than
+    off-chain API trust, Path publishes its prediction stream through
+    a Chainlink Runtime Environment workflow. Vault contracts read
+    cryptographically signed signals on-chain.
+  </Card>
+</CardGroup>
+
+## How to start
+
+Email **path@pathprotocol.finance** with:
+
+- A short description of the partner surface you operate.
+- The integration shape that fits best (widget, feed pull, webhook,
+  or signed signal).
+- The jurisdictions and protocols you care about.
+
+We respond inside one business day, scope the engagement, and open
+sandbox access after the partnership terms are agreed. We do not
+publish pricing publicly; commercial terms are set inside each
+partnership conversation.

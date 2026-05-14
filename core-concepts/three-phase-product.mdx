@@ -4,11 +4,11 @@ description: "How Path's distribution model evolves from read-only intelligence 
 ---
 
 Path is delivered in three phases. Each phase widens the surface but
-keeps the same underlying engine. The phase ordering is deliberate—it
+keeps the same underlying engine. The phase ordering is deliberate: it
 lets us reach institutional users today without taking on regulatory
 exposure we are not yet structured to carry.
 
-## Phase 1 — Read-only intelligence
+## Phase 1: Read-only intelligence
 
 <Note>
 Live today. No transactions. No regulatory surface.
@@ -22,17 +22,17 @@ the signal; the user decides whether to act on it.
 Read-only mode is the right starting point because:
 
 - **Zero regulatory exposure.** We are not custodying funds, not
-  executing trades, not pretending to be a managed product. Information
-  layer only.
+  executing trades, not pretending to be a managed product.
+  Information layer only.
 - **Wide top-of-funnel.** Anyone can connect a wallet and start
   consuming the predictions. The bar for institutional pilots is
-  "do these signals correlate with what I would have done", not "do I
-  trust you with my balance sheet".
-- **Calibration feedback.** Every prediction we publish gets a forward
-  resolution within 7 days. That stream is what trains the next
-  generation of the engine.
+  "do these signals correlate with what I would have done", not
+  "do I trust you with my balance sheet".
+- **Calibration feedback.** Every prediction we publish gets a
+  forward resolution within its horizon. That stream is what trains
+  the next generation of the engine.
 
-## Phase 2 — Transaction crafting
+## Phase 2: Transaction crafting
 
 Path generates the rebalance transactions. The user still signs and
 submits. This is the phase where Path slots into modular rail layers
@@ -40,30 +40,30 @@ as a strategy manager.
 
 Two integration shapes live here:
 
-- **Embedded API + widget.** Existing earn surfaces (custodians, asset
-  managers, on-chain treasury platforms) embed the Path widget. The
-  widget reads the user's wallet context, calls Path's API, presents
-  the optimised allocation, and hands the user a pre-built
-  transaction for signing.
-- **DON-signed signals.** Path output runs through a Chainlink Runtime
-  Environment (CRE) workflow that produces DON-signed verifiable
-  signals. Any vault contract on any supported chain can read those
-  signals with cryptographic guarantees, converting "trust Path's
-  off-chain compute" into "verifiable on-chain signal".
+- **Embedded partner surface.** Existing earn surfaces (custodians,
+  asset managers, on-chain treasury platforms) embed Path inside
+  their product. The embed reads the user's wallet context, calls
+  Path's intelligence layer, presents the optimised allocation, and
+  hands the user a pre-built transaction for signing.
+- **DON-signed signals.** Path output runs through a Chainlink
+  Runtime Environment (CRE) workflow that produces DON-signed
+  verifiable signals. Any vault contract on any supported chain can
+  read those signals with cryptographic guarantees, converting
+  "trust Path's off-chain compute" into "verifiable on-chain
+  signal".
 
-The transaction-crafting layer is what makes Path institutional. It is
-also the layer that introduces a regulatory dependency, which is why
-we are deliberately keeping it gated behind the appropriate licensing
-discussions.
+The transaction-crafting layer is what makes Path institutional. It
+is also the layer that introduces a regulatory dependency, which is
+why we are deliberately keeping it gated behind the appropriate
+licensing discussions.
 
-## Phase 3 — Policy engine + automation
+## Phase 3: Policy engine + automation
 
 Path becomes a policy engine that automates allocation based on a
-user-defined risk profile. The first thing it does on user
-connection is read the wallet's behavioural history to classify
-the user as a yield-chaser, a stability-first allocator, or somewhere
-in between. Allocation suggestions then surface that match the
-profile.
+user-defined risk profile. The first thing it does on user connection
+is read the wallet's behavioural history to classify the user as a
+yield-chaser, a stability-first allocator, or somewhere in between.
+Allocation suggestions then surface that match the profile.
 
 Phase 3 requires the regulatory framework Phase 2 forces us into. We
 are not building it yet; we are structuring Phase 2 in a way that

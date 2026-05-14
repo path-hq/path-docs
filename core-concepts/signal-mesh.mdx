@@ -1,11 +1,12 @@
 ---
 title: "Signal Mesh"
-description: "The prediction engine behind Path: ~117 signals, six categories, multi-horizon directional and continuous outputs."
+description: "The prediction engine behind Path: a multi-horizon ensemble of gradient-boosted classifiers with regime detection, calibration, and per-recommendation explainability."
 ---
 
-Signal Mesh is Path's prediction engine. Every 15 minutes it ingests
-~117 signals across six categories, fans them into a multi-horizon
-model stack, and emits confidence-scored predictions per pool.
+Signal Mesh is Path's prediction engine. It ingests a wide cross-section
+of on-chain, market, and macro signals on a continuous cadence, fans
+them into a multi-horizon model stack, and emits confidence-scored
+predictions per pool.
 
 ## Signal inputs
 
@@ -14,11 +15,11 @@ model stack, and emits confidence-scored predictions per pool.
     Utilisation curves, supply and borrow caps, oracle staleness,
     reserve factors, kink slopes, interest-accrual fragility.
   </Card>
-  <Card title="TVL flow + cohort behaviour" icon="users">
-    Institutional vs. retail cohort flow, 24h / 7d / 30d TVL deltas,
+  <Card title="TVL flow and cohort behaviour" icon="users">
+    Institutional vs. retail cohort flow, multi-window TVL deltas,
     address-level rebalance event clustering.
   </Card>
-  <Card title="Prediction-market + sentiment" icon="chart-mixed">
+  <Card title="Prediction-market and sentiment" icon="chart-mixed">
     Prediction-market-derived risk premia, sentiment on
     protocol-specific tickers, governance-vote dispersion.
   </Card>
@@ -28,79 +29,95 @@ model stack, and emits confidence-scored predictions per pool.
   </Card>
   <Card title="Per-protocol specialists" icon="microscope">
     Mechanism-specific signals like AMM-yield discount evolution,
-    vault-level curator action, parameter-drift detection, governance
-    activity.
+    vault-level curator action, parameter-drift detection,
+    governance activity.
   </Card>
   <Card title="Cross-protocol correlation" icon="diagram-project">
-    Pair-wise APY co-movement matrix, regime-flip detection, leader–
-    lagger graph from a 60-day rolling window.
+    Pair-wise APY co-movement matrix, regime-flip detection, lead and
+    lag relationships across a rolling window.
   </Card>
 </CardGroup>
 
-## Model stack
+## Model architecture
 
-The active stack publishes predictions on three horizons:
+Signal Mesh is a **multi-horizon ensemble of gradient-boosted
+classifiers**, not a single monolithic model. The ensemble combines
+short-horizon directional heads with longer-horizon stability and
+continuous-yield estimators, each calibrated independently and
+weighted by regime context at inference time.
+
+The headline capabilities:
 
 <AccordionGroup>
-  <Accordion title="Intraday 6-hour direction">
-    Sub-day directional signal used for tight-cadence rebalance
-    triggers. Sign-based accuracy, statistically significant against
-    the random-walk baseline at standard test thresholds. Best for
-    pools where utilisation changes quickly and rebalancing cost is
-    low.
+  <Accordion title="Multi-horizon ensemble">
+    Predictions are published across multiple forward horizons in
+    parallel: a short intraday directional view, a primary daily
+    directional view, and a longer-horizon stability view. Each
+    horizon answers a different allocation question and is scored
+    independently against forward-resolved outcomes.
   </Accordion>
-  <Accordion title="1-day direction">
-    Primary directional model. The number we publish most prominently
-    in product surfaces. Calibrated for confidence-score
-    interpretability; outputs are usable as both a binary trigger and a
-    confidence-weighted scaler.
+  <Accordion title="Regime detection">
+    A dedicated regime-detection layer classifies the current market
+    regime (trending, mean-reverting, dislocated, calm) and modulates
+    the weights inside the ensemble accordingly. The same pool gets
+    a different ensemble composition in a yield-spike regime than in
+    a calm regime, which is what makes the multi-horizon view useful
+    rather than noisy.
   </Accordion>
-  <Accordion title="30-day stability">
-    Three-class output: trending up, trending down, stable. Used for
-    long-horizon allocation context and to flag pools where the
-    1-day signal is noise around a stable mean rather than a real
-    directional move.
+  <Accordion title="Confidence calibration">
+    Every prediction is published with a calibrated confidence score
+    on a 0 to 100 scale. The calibration step is what makes the
+    confidence usable as an actionable threshold: a 90 means the
+    model is meaningfully more sure than at 60, and a partner can
+    act on that band difference. Uncalibrated raw classifier scores
+    do not have this property.
+  </Accordion>
+  <Accordion title="SHAP-style explainability">
+    Every recommendation is shipped with a per-feature contribution
+    breakdown using SHAP-style attribution. Partners can see which
+    on-chain or macro signal drove the prediction up or down, not
+    just the headline number. This is what makes Signal Mesh
+    auditable rather than a black box.
+  </Accordion>
+  <Accordion title="Per-mechanism specialists">
+    For protocol families where the underlying yield mechanism is
+    structurally different from utilisation-curve lending (for
+    example AMM-style yield), Signal Mesh routes to a dedicated
+    per-mechanism specialist rather than forcing a single feature
+    set across all protocols. The specialists materially outperform
+    the generalist on their own protocol family.
+  </Accordion>
+  <Accordion title="Hybrid composite score">
+    A hybrid composite combining the directional output, a continuous
+    APY estimator, native risk signals, and liquidity-impact context.
+    The composite score is what drives the front-page allocation
+    ranking, not any single head in isolation.
   </Accordion>
 </AccordionGroup>
 
-In addition to the three directional heads, Signal Mesh emits:
+## Integrity behind the predictions
 
-- A **continuous APY estimator** for the 7-day forward horizon,
-  decomposed into base yield, reward yield, and demand components per
-  protocol family. The decomposition is what lets the estimator handle
-  protocols with structurally different rate mechanics—lending,
-  AMM-style fixed yield, and governance-set rates—without forcing
-  them through a single feature set.
-- A **per-mechanism specialist** for AMM-style yield where the
-  underlying pricing is mechanically different from utilisation-curve
-  lending. Specialists score ~20 percentage points higher than the
-  generalist on their own protocol family on test data.
-- A **hybrid composite score** combining the directional output, the
-  continuous estimator, native risk signals, and liquidity-impact
-  context. The hybrid score is what drives the front-page allocation
-  ranking.
-
-## Retrain cadence
-
-The directional models retrain on a three-day cadence using a rolling
-window. A live-accuracy gate on every active model runs every 10
-minutes and auto-deprecates any model that falls below the public
-DeFiLlama baseline on a 100+ sample window. The gate auto-files a
-ticket and pages the team on failure—calibration drift is one of the
-few classes of bug that can ship silently in a model pipeline, and we
-want that loop closed.
+The model stack retrains on a regular cadence using rolling windows,
+and every active model is gated by a live forward-accuracy monitor.
+Models that drift below their published performance band are
+automatically deprecated and flagged for retrain before any partner
+surface continues to consume them. Calibration drift is one of the
+few classes of failure that can ship silently in a model pipeline,
+and we want that loop closed.
 
 ## How predictions surface
 
 Every prediction is published with:
 
-- The horizon (6 hours, 1 day, 7 days, 30 days)
+- The forward horizon
 - A direction class (up, down, stable)
-- A calibrated confidence score (0–100)
-- A continuous APY estimate
-- A liquidity-impact context: "you would represent X% of this pool's
-  TVL with a $Y deposit"
+- A calibrated confidence score (0 to 100)
+- A continuous APY estimate for the relevant horizon
+- A SHAP-style feature attribution breakdown
+- A liquidity-impact context: "you would represent X percent of this
+  pool's TVL with a Y deposit"
 
 The last item is the answer to the question every allocator asks
-first—"if I move size, do I cannibalise the yield I am chasing?"—and
-is documented in detail under [Liquidity impact](/core-concepts/liquidity-impact).
+first: "if I move size, do I cannibalise the yield I am chasing?" It
+is documented in detail under
+[Liquidity impact](/core-concepts/liquidity-impact).

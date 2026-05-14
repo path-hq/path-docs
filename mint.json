@@ -27,7 +27,7 @@
   ],
   "topbarCtaButton": {
     "name": "Contact",
-    "url": "mailto:fares@pathprotocol.finance"
+    "url": "mailto:path@pathprotocol.finance"
   },
   "anchors": [],
   "navigation": [
@@ -45,10 +45,9 @@
       ]
     },
     {
-      "group": "Integration",
+      "group": "Partner Access",
       "pages": [
-        "integrations/integration-shape",
-        "integrations/api-and-widget"
+        "integrations/partner-access"
       ]
     },
     {

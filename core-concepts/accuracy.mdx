@@ -1,70 +1,76 @@
 ---
-title: "Accuracy"
-description: "Honest accuracy bands: test, live-full-universe, and live-carve-out at high confidence."
+title: "Confidence calibration"
+description: "Every Path prediction ships with a calibrated confidence score and a SHAP-style explainability breakdown."
 ---
 
-Accuracy claims in DeFi are usually marketing. We publish three
-distinct accuracy surfaces because they answer different questions and
-because conflating them is how bad allocation decisions get made.
+Accuracy claims in DeFi are usually marketing. Path's approach is the
+opposite: every prediction is published with a calibrated confidence
+score and a per-feature attribution breakdown so that an allocator can
+see not just *what* the model predicts but *how sure it is* and *why*.
 
-## The three surfaces
+## What confidence calibration means
 
-<CardGroup cols={1}>
-  <Card title="Test set" icon="flask">
-    The accuracy on the held-out evaluation slice from training time.
-    Predictions made on data the model has never seen. **Cross-validated
-    test-set accuracy lands in the high 60s** for the 1-day directional
-    model, with per-mechanism specialists scoring in the low 80s on
-    their own protocol family.
-  </Card>
-  <Card title="Live, full universe" icon="globe">
-    The accuracy across every pool we monitor, post-deployment, on
-    forward-resolved data. This is the most conservative number and
-    the right one for "how does the model actually behave in the
-    wild". **Live full-universe sign-based accuracy currently sits in
-    the low 50s** for the 1-day model, lifted by a calibration retrain
-    that landed in the last week.
-  </Card>
-  <Card title="Live, carve-out cohort, high confidence" icon="bullseye">
-    The accuracy on the subset of pools where Path has the deepest
-    coverage and the highest signal density, filtered to predictions
-    where the model assigned ≥85% confidence. This is the headline
-    number we cite to institutional partners because it is the
-    operational range a Strategy Manager would actually trade.
-    **Carve-out high-confidence sign-based accuracy: ~59.5%**, vs. the
-    DeFiLlama random-walk baseline of 53.5%. The lift is statistically
-    significant at p ≈ 0.0001.
-  </Card>
-</CardGroup>
+A raw classifier score is not the same as a calibrated probability.
+Two models can both output "0.85" and be wildly different in how often
+they are right at that level. Signal Mesh runs a dedicated calibration
+step on every active directional head so that the confidence score we
+publish is interpretable as an actionable threshold:
 
-## Why the gap between test and live
+- A prediction at confidence 90 is meaningfully more reliable than one
+  at confidence 60.
+- A partner can set a confidence floor (only act on predictions above
+  threshold T) and trust that the threshold means something.
+- Stratifying live performance by confidence band returns the
+  monotonic shape calibration is supposed to deliver.
 
-Test accuracy and live accuracy diverge for three reasons:
+This is the property that makes the confidence score usable inside an
+allocation policy rather than as a decorative number.
 
-1. **Distribution shift.** Live data drifts from training data over
-   time. We mitigate with a three-day retrain cadence and a live
-   accuracy gate that flags drift.
-2. **Per-pool heterogeneity.** Some pools have richer signal coverage
-   than others. The carve-out cohort exists to surface the operational
-   range where coverage and signal density are strongest.
-3. **Confidence-band stratification.** Calibrated models concentrate
-   accuracy at the high-confidence end. Reporting the un-stratified
-   mean obscures that. The high-confidence subset is the relevant
-   one for an allocator who will only act on high-confidence calls.
+## SHAP-style explainability
 
-## Aspirational ceiling
+Every prediction Path emits is accompanied by a per-feature
+contribution breakdown using SHAP-style attribution. For any specific
+recommendation, an allocator can see which on-chain signals,
+prediction-market signals, macro indicators, or cross-protocol
+correlations drove the directional call up or down.
 
-Published research on stablecoin 1-day directional classifiers tops
-out around 71–72%. That is the ceiling we are targeting, not 90%.
-Direction prediction on chaotic systems has a real ceiling and
-overpromising is how products lose institutional credibility.
+This matters for two reasons:
 
-## Integrity layer
+1. **Auditability.** A risk officer can interrogate any single
+   prediction and understand why the model said what it said. There
+   is no black-box layer between the input signals and the output.
+2. **Drift detection.** If the same protocol's prediction is suddenly
+   being driven by a different feature group than it was last week,
+   that is itself a signal that the regime has shifted, independent
+   of the prediction's direction.
 
-A continuous-loop verifier daemon re-computes every accuracy number
-shown on Path surfaces (admin dashboards, public docs, partner-facing
-exports) from the canonical SQL every 30 minutes. Drift greater than
-0.5 percentage points pages our on-call and auto-files a ticket. This
-is the operational hygiene behind every number on this site—numbers
-that drift silently are how trust gets destroyed in a single bad
-demo.
+## Live monitoring
+
+Path runs a continuous-loop verifier that re-computes every accuracy
+band shown on partner-facing surfaces from canonical sources on a
+short cadence. Performance bands that drift beyond a pre-set
+tolerance auto-page on-call and gate the affected model out of the
+live prediction stream. This is the operational hygiene behind every
+performance band on this site: numbers that drift silently are how
+trust gets destroyed in a single bad demo.
+
+## What we publish, and what we do not
+
+We publish:
+
+- Calibrated confidence scores on every prediction.
+- Per-feature attribution breakdowns on every prediction.
+- Live performance bands on the partner dashboard for any partner
+  with an active integration.
+
+We do not publish:
+
+- Detailed model architecture, training recipes, or feature
+  engineering.
+- Specific cohort breakdowns or per-pool win rates.
+- Numbers that have not first cleared the live verifier.
+
+The honest framing for an institutional partner is that Path is
+opinionated about what it predicts, calibrated about how sure it is,
+and transparent about why. The model recipe is proprietary; the
+operational behaviour is not.

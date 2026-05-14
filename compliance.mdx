@@ -1,62 +1,106 @@
 ---
 title: "Trust and compliance"
-description: "Risk, integrity, and regulatory posture."
+description: "Real-time address screening, smart contract risk scoring, and pre-allocation gating."
 ---
 
-Trust is the only product Path actually sells. Predictions are easy
-to publish; predictions that institutional allocators can act on
-require an integrity layer behind every number. This page documents
-that layer.
+Trust is the only product Path actually sells. Predictions are easy to
+publish; predictions that institutional allocators can act on require
+a compliance layer that runs in front of every recommendation, not as
+a post-hoc check. This page documents that layer.
 
-## Phase 1 (read-only): no regulatory surface
+## Compliance as a real-time gate
 
-Path Phase 1 is an information layer. We do not custody funds, we
-do not execute transactions, and we do not present allocation
-guidance as a managed product. The user remains the decision-maker.
-This is the right starting point both for product reasons (wide
-top-of-funnel) and for regulatory reasons (zero surface today,
-clean runway to add it in Phase 2 with the appropriate framework).
+The defining property of Path's compliance stack is that it runs
+**before** any pool enters the live allocation set. A pool that fails
+any screen is not surfaced to a partner, not included in the
+recommendation feed, and not part of the ranked output. Compliance is
+a pre-condition for visibility, not a warning sticker attached to a
+recommendation that already shipped.
 
-## Phase 2 (transaction-crafting): regulatory dependency
+Three checks run in parallel on every protocol and every pool we
+monitor:
+
+<CardGroup cols={2}>
+  <Card title="Address screening (Chainalysis)" icon="user-shield">
+    Every protocol contract address, treasury address, and
+    counterparty address is screened through Chainalysis against the
+    standard institutional sanctions and risk feeds. Hits are
+    blocked from the allocation set in real time and the screening
+    result is logged against the protocol record for audit.
+  </Card>
+  <Card title="Smart contract risk scoring (GoPlus)" icon="shield-check">
+    Every smart contract a pool touches is scored through GoPlus on
+    contract-level risk signals: ownership concentration,
+    upgradeability, hidden functions, mint authority, blacklist
+    patterns, and on-chain incident history. Pools sitting on
+    contracts with elevated risk scores are excluded from the
+    allocation set or surfaced with a flagged status, depending on
+    the partner's policy.
+  </Card>
+  <Card title="Pre-allocation gating" icon="gate-closed">
+    The combined screening output gates a pool's eligibility for the
+    allocation set on every refresh cycle. If a sanctions hit lands,
+    if a contract upgrade introduces new risk, or if an incident
+    flag fires on a counterparty, the pool is removed from the live
+    set on the next cycle without waiting for human review.
+  </Card>
+  <Card title="Post-trade monitoring" icon="magnifying-glass">
+    After a partner executes against Path's recommendation, the
+    affected pool stays under continuous re-screening. Sanctions and
+    risk-score state can change after a position is opened, and the
+    monitoring loop flags any change so the partner can take
+    appropriate action.
+  </Card>
+</CardGroup>
+
+## Why pre-allocation gating matters
+
+The alternative pattern, in which compliance runs as a downstream
+check after a recommendation has already been published, leaves a
+gap that institutional allocators cannot accept. By the time the
+post-hoc check fires, the recommendation has already been seen,
+acted on, or surfaced inside an embedding partner's product. Path's
+gating runs the other way around: the recommendation is not
+emitted at all unless the compliance state is clean.
+
+This is the property that makes Path consumable inside an
+institutional allocation workflow rather than alongside one.
+
+## Phase 1: no regulatory surface on top
+
+Path Phase 1 is an information layer. We do not custody funds, we do
+not execute transactions, and we do not present allocation guidance
+as a managed product. The user remains the decision-maker. This is
+the right starting point both for product reasons (wide
+top-of-funnel) and for regulatory reasons (zero surface today, clean
+runway to add it in Phase 2 with the appropriate framework). The
+compliance gate described above runs regardless of phase because the
+underlying screening discipline is the same whether the partner
+consumes a signal or executes against it.
+
+## Phase 2: regulatory dependency
 
 Transaction crafting introduces a regulatory dependency that we are
 structuring against deliberately. The licensing route depends on the
-specific embedding partner's jurisdiction—a custodial earn surface
+specific embedding partner's jurisdiction: a custodial earn surface
 in one jurisdiction may carry a different obligation profile than a
 modular rail layer in another. We engage on the regulatory framework
 inside each integration conversation rather than committing to a
 single global structure that will not fit every partner.
 
-## Risk + screening stack
+## Audit posture
 
-- **Sanctions screening** runs daily against Open Sanctions data plus
-  a commercial provider's API, applied at the pool level (pool's
-  associated treasury and audit-history addresses) and at the
-  allocator level (the wallet about to receive the recommendation).
-- **Pool-level risk** combines smart-contract risk scoring, oracle
-  staleness checks, governance-action history, and a native risk
-  model that scans pool jurisdiction against the embedding partner's
-  incorporation thresholds.
-- **Custodial integration** with a major institutional custody
-  partner is in sandbox today; production roll-out is sequenced with
-  the Phase 2 transaction-crafting work.
-
-## Audit roadmap
-
-- Continuous-loop accuracy verifier (live today) re-computes every
-  number on every Path surface from canonical SQL every 30 minutes.
-  Drift greater than the published tolerance pages our on-call and
-  auto-files a ticket.
+- The continuous-loop verifier re-computes every performance band
+  shown on Path surfaces from canonical sources on a short cadence,
+  with drift beyond tolerance auto-paging on-call.
 - Third-party smart-contract audit is scoped against the Phase 2
-  transaction-crafting deployment. Not applicable to Phase 1
-  read-only mode.
-- Annual SOC 2 type II is on the post-Phase-2 roadmap.
+  transaction-crafting deployment.
+- Partner-specific data (wallet contexts, allocation suggestions
+  emitted to a specific partner) is segregated at the schema level
+  with role-isolated access and a read audit log.
 
-## Data residency
-
-Live prediction data is hosted on managed Postgres infrastructure
-with encrypted backups, role-isolated access, and an audit log on
-every read. Partner-specific data (wallet contexts, allocation
-suggestions emitted to a specific partner) is segregated at the
-schema level. Self-host is available for partners with strict
-residency requirements.
+The framing for institutional partners is straightforward: the
+compliance layer is the precondition for everything else Path
+publishes. We do not separate "the intelligence" from "the
+screening" because the screening is what makes the intelligence safe
+to consume.
