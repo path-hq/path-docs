@@ -1,0 +1,250 @@
+---
+title: "Integration onboarding"
+description: "Sequenced onboarding for an integration team evaluating Path as a strategy intelligence layer on top of a modular rail."
+---
+
+This page is for the technical team on the other side of a partnership
+conversation. The goal is to let a PM or DeFi lead navigate from "what
+is Path" to "how would we plug Path into our existing rail" in a single
+read.
+
+## At a glance
+
+<CardGroup cols={2}>
+  <Card title="What Path is" icon="brain">
+    A prediction engine plus an embeddable surface. Signal Mesh ingests
+    ~117 signals every 15 minutes and emits confidence-scored,
+    multi-horizon predictions per pool. The intelligence drives
+    automated allocation logic in later phases; today it is read-only.
+  </Card>
+  <Card title="What Path is not" icon="ban">
+    Not a fund. Not advisory-only. Not a yield aggregator that chases
+    the highest APY. The target sustainable yield is around 6%, not 12%
+    or 18%.
+  </Card>
+  <Card title="Where Path slots in" icon="puzzle-piece">
+    Modular rail layers as a strategy manager / operational vehicle.
+    Path runs the allocation strategy; the rail handles custody,
+    execution, NAV reporting, KYC, and distribution.
+  </Card>
+  <Card title="How partners consume Path" icon="code">
+    Two surfaces: REST and GraphQL API for headless integration, or a
+    drop-in widget that embeds the prediction and allocation surface
+    inside an existing earn product.
+  </Card>
+</CardGroup>
+
+## Step-by-step evaluation path
+
+<Steps>
+  <Step title="Read the product surface">
+    Start with [Three-phase product](/core-concepts/three-phase-product)
+    to understand how Path's surface evolves from read-only to
+    transaction-crafting to policy-engine automation. This is the
+    deployment shape; everything else follows from it.
+  </Step>
+  <Step title="Read the engine">
+    Then [Signal Mesh](/core-concepts/signal-mesh) for the signal
+    inputs, model stack, and retrain cadence. The honest accuracy
+    bands live at [Accuracy](/core-concepts/accuracy); the answer to
+    "what happens to APY if I deposit size" lives at
+    [Liquidity impact](/core-concepts/liquidity-impact).
+  </Step>
+  <Step title="Read the integration shape">
+    [Integration shape](/integrations/integration-shape) explains the
+    strategy-manager pattern and the modular para-block split.
+    [API and widget](/integrations/api-and-widget) is the embedding
+    contract.
+  </Step>
+  <Step title="Read the trust posture">
+    [Trust and compliance](/compliance) covers the risk model
+    (sanctions screening via Open Sanctions plus a commercial provider,
+    native pool-jurisdiction scanning, smart-contract risk scoring) and
+    the integrity layer (continuous-loop verifier daemon, drift
+    paging, audit roadmap).
+  </Step>
+  <Step title="Ask the question we have not answered here">
+    The fastest channel for an integration deep-dive is direct contact
+    at [fares@pathprotocol.finance](mailto:fares@pathprotocol.finance).
+    We can schedule a 30-minute call covering the specific bits this
+    page does not.
+  </Step>
+</Steps>
+
+## Strategy-manager framing
+
+Path's wedge into a modular rail is the **strategy-manager slot**, not
+a yield-source slot. Concretely:
+
+<AccordionGroup>
+  <Accordion title="What Path contributes">
+    A signal-driven allocation policy: which yield sources to weight,
+    when to rebalance, with what conviction. Every recommendation
+    carries a confidence score and the SHAP-style explainability
+    behind it. Path scores ~296 pools every 15 minutes and emits
+    predictions across 6h, 1d, and 30d horizons plus a continuous
+    7-day APY estimator.
+  </Accordion>
+  <Accordion title="What the rail contributes">
+    Custody, on-chain execution, NAV computation, KYC and
+    jurisdictional wrapping, distribution to end-clients. Path does
+    not aspire to replicate this layer; it is a strict separation of
+    concerns and it is what makes the strategy-manager pattern work.
+  </Accordion>
+  <Accordion title="Why this works">
+    The pattern matches the curator-strategy-manager shape that has
+    driven institutional curator growth on-chain over the last
+    18 months. The rail focuses on what it is good at (security,
+    custody, regulatory wrapping); the strategy provider focuses on
+    intelligence and allocation; both layers benefit from the network
+    effect of shared user surfaces.
+  </Accordion>
+</AccordionGroup>
+
+## Concrete integration questions
+
+The honest list of questions a PM should ask us in the first call.
+Most have answers in the relevant section; a few are open and we will
+say so.
+
+<AccordionGroup>
+  <Accordion title="Where do allocation decisions originate?">
+    In Phase 1, Path publishes signal; the user decides. In Phase 2,
+    Path crafts the rebalance transaction and an authorised signer
+    (an asset manager wallet, an operator key, a partner contract)
+    submits it. In Phase 3, a policy engine signs against a
+    user-defined risk profile within partner-set guardrails. The phase
+    the integration sits in is a contract decision per partner.
+  </Accordion>
+  <Accordion title="Can we drive allocation from your API instead of from your UI?">
+    Yes. `api.pathprotocol.finance/v1` exposes the prediction stream,
+    the liquidity-impact context, the historical accuracy registry,
+    and the rebalance-cost estimator. Authentication is API-key based
+    for read endpoints; the partner can poll or subscribe.
+  </Accordion>
+  <Accordion title="Can we embed your UI instead of building our own?">
+    Yes. The widget reads the connected wallet, calls the Path API,
+    and renders the allocation breakdown, the recommended rebalance
+    with confidence and break-even, and the liquidity-impact context.
+    The widget is design-system aware: pass colour tokens, typography
+    tokens, and a layout container, and the widget styles itself to
+    match.
+  </Accordion>
+  <Accordion title="Do you support on-chain verifiable signal output?">
+    Yes. Path's prediction stream runs through a Chainlink Runtime
+    Environment (CRE) workflow that signs the prediction tuple
+    `(pool_id, direction, confidence, predicted_apy, predicted_at)`.
+    Any vault contract on any supported chain can read the signed
+    signal with cryptographic guarantees. This converts off-chain
+    compute trust into on-chain verifiability without requiring Path
+    to operate its own validator set.
+  </Accordion>
+  <Accordion title="What is your model accuracy honestly?">
+    Three bands, and we publish all three. Test-set sign-based
+    accuracy is in the high 60s for the 1-day directional model.
+    Live full-universe sign-based accuracy currently sits in the low
+    50s. Live carve-out high-confidence (the operational range a
+    strategy manager would actually trade) lands around 59.5% vs the
+    DeFiLlama random-walk baseline of 53.5%, statistically significant
+    at p around 0.0001. Per-protocol specialists score in the low 80s
+    on their own protocol family. The published research ceiling on
+    stablecoin 1-day directional classifiers is around 71-72%; that is
+    the band we are targeting, not 90%.
+  </Accordion>
+  <Accordion title="What happens to predicted APY if I deposit at size?">
+    The liquidity-impact context block on every prediction answers
+    this directly. For a hypothetical deposit of size X, we compute
+    pool-share representation, post-deposit APY via the protocol's
+    actual rate mechanism (utilisation curve for lending, swap-fee
+    math for AMM-style yield, governance-set rate for stability
+    rails), expected slippage band where applicable, and a break-even
+    horizon combining direction confidence, post-deposit APY, and gas
+    cost. The post-deposit APY estimate matches realised within
+    around 1 percentage point in 6 cases out of 10 on backtest data.
+    See [Liquidity impact](/core-concepts/liquidity-impact) for the
+    full surface.
+  </Accordion>
+  <Accordion title="What is your risk model?">
+    Native, built in-house. Sanctions screening runs daily against
+    Open Sanctions data plus a commercial provider's API, applied at
+    pool level (associated treasury and audit-history addresses) and
+    at allocator level (the wallet about to receive the
+    recommendation). Pool-level risk combines smart-contract risk
+    scoring, oracle staleness checks, governance-action history, and
+    a native pool-jurisdiction scanner that validates against the
+    embedding partner's incorporation thresholds.
+  </Accordion>
+  <Accordion title="What is the regulatory shape?">
+    Phase 1 (today) is read-only information; no transactions, no
+    custody, no managed-product framing. Zero regulatory surface.
+    Phase 2 (transaction crafting) introduces a regulatory dependency
+    that we structure against per-partner because the licensing
+    obligation depends on the embedding partner's jurisdiction.
+    Phase 3 (policy automation) requires the framework Phase 2 forces
+    us into. We engage the regulatory framework inside each
+    integration conversation, not by committing to one global
+    structure.
+  </Accordion>
+  <Accordion title="How do you handle drift?">
+    A continuous-loop verifier daemon re-computes every accuracy
+    number shown on any Path surface from canonical SQL every 30
+    minutes. Drift greater than 0.5 percentage points pages our
+    on-call and auto-files a ticket. The directional models retrain
+    on a three-day cadence; a live-accuracy gate on every active
+    model runs every 10 minutes and auto-deprecates any model that
+    falls below the DeFiLlama baseline on a 100+ sample window.
+  </Accordion>
+  <Accordion title="What about team and bus-factor?">
+    Path is operated by a small team augmented by a specialised agent
+    crew (research, QA, content, operations) with full audit trails
+    across the development and verification pipeline. The depth of
+    automation around verification (continuous-loop verifier daemon,
+    auto-deprecation gates, retrain-and-rollback policy) is
+    deliberately high; the operational risk a partner inherits is
+    bounded by these layers, not by raw headcount.
+  </Accordion>
+</AccordionGroup>
+
+## What we ask of an integration partner
+
+The minimum contract for a sandbox or pilot integration:
+
+- A clear scope (which strategy slot, which user cohort, which yield
+  sources are in scope).
+- A specification for how Path's output surfaces to the end-user
+  (embedded widget, native UI consuming the API, or DON-signed signal
+  read on-chain by a vault contract).
+- A rebalance frequency window we should design Signal Mesh's signal
+  emission cadence around.
+- A jurisdictional posture so we can scope the regulatory framework
+  per partner.
+
+We do not require:
+
+- An SDK lock-in. The widget and the API are independent surfaces; a
+  partner can consume either or both.
+- A revenue minimum. Pricing is a curator-fee shape (% of TVL or % of
+  net yield over baseline); the right model is negotiated per partner.
+- Exclusivity. Path runs as a strategy provider across multiple
+  rails; we do not constrain partner distribution.
+
+## Live surfaces for hands-on review
+
+<CardGroup cols={2}>
+  <Card title="Web app" icon="window" href="https://app.pathprotocol.finance">
+    The live read-only surface where allocators consume Path's
+    predictions and liquidity-impact context. A PM evaluating the
+    product surface should connect a wallet and walk through the
+    opportunity page and a per-pool detail panel.
+  </Card>
+  <Card title="Marketing site" icon="globe" href="https://www.pathprotocol.finance">
+    Product positioning, use-cases, the team page.
+  </Card>
+  <Card title="API root" icon="code" href="https://api.pathprotocol.finance/v1">
+    Header-authenticated REST and GraphQL surface. Request keys via
+    [fares@pathprotocol.finance](mailto:fares@pathprotocol.finance).
+  </Card>
+  <Card title="This documentation" icon="book" href="https://docs.pathprotocol.finance">
+    The doc surface a PM should read end-to-end before the first call.
+  </Card>
+</CardGroup>
