@@ -1,72 +1,59 @@
 ---
 title: "API and widget"
-description: "How partners embed Path into their existing surface."
+description: "How Path slots into a partner surface: private API, embeddable widget, on-chain signed signals."
 ---
 
-The two embedding surfaces—API and widget—are designed to fit
-inside an existing earn or treasury product without forcing the
-partner to rebuild their UX.
+Signal Mesh is delivered to partners through two embedding surfaces
+and an on-chain feed. Endpoint detail, schema, and access tokens are
+handled inside the integration conversation; this page describes the
+capability shape so a partner can decide whether the fit is right.
 
-## API
+## Private API
 
-Path's API is a clean REST + GraphQL layer over the prediction
-stream, organised around four resource families:
+Path operates a private API that publishes the prediction stream, the
+liquidity-impact context, the historical accuracy registry, and the
+rebalance-cost estimator. A partner can drive their own allocation UI
+from this stream, run backtests over historical Path output, or wire
+it into an existing portfolio system.
 
-<AccordionGroup>
-  <Accordion title="Pools">
-    `GET /v1/signals/pools` returns the current prediction and
-    liquidity-impact context for every monitored pool, with
-    confidence-score filtering and per-protocol-family pagination.
-  </Accordion>
-  <Accordion title="Predictions">
-    `GET /v1/signals/predictions/calendar` returns the time-series of
-    predictions for any single pool over a user-specified window.
-    Useful for back-testing a strategy against Path's historical
-    output before going live.
-  </Accordion>
-  <Accordion title="Briefing">
-    `GET /v1/signals/predictions/briefing` returns the daily summary—
-    top movers, regime flips, biggest accuracy wins of the last 24
-    hours. Designed to power a "Path daily" email or Slack post.
-  </Accordion>
-  <Accordion title="Backtest">
-    `GET /v1/signals/backtest` returns the realised performance of a
-    hypothetical allocation strategy defined by the caller. Used by
-    partners to assess Path's signal quality on their own historical
-    portfolio.
-  </Accordion>
-</AccordionGroup>
+Access is granted per integration; pricing, rate-limits, and
+data-residency posture are set in the partnership contract. To
+request access, contact [hello@pathprotocol.finance](mailto:hello@pathprotocol.finance).
 
-Authentication is API-key based for read endpoints. Write endpoints
-require an additional admin header tied to the partner's deployment.
+## Embeddable widget
 
-## Widget
+A drop-in widget renders Path's allocation intelligence inside the
+partner's earn or treasury surface. The widget reads the connected
+wallet (or an explicit balance supplied by the partner), surfaces the
+allocation breakdown, the recommended rebalance with confidence and
+break-even, the liquidity-impact context for any deposit size, and
+an expandable panel showing the signal and its accuracy band.
 
-The drop-in widget renders Path's allocation intelligence inside an
-embedding surface. The widget reads the connected wallet (or an
-explicit balance from the partner), calls Path's API, renders:
+The widget is design-system aware: the partner provides colour
+tokens, typography tokens, and a layout container, and the widget
+styles itself to match.
 
-- The current allocation breakdown
-- The recommended re-balance with confidence + break-even
-- The liquidity-impact context for any deposit size
-- An expandable panel showing the signal source and accuracy band
+## On-chain signed signals
 
-The widget is design-system aware: the embedding partner provides
-colour tokens, typography tokens, and a layout container, and the
-widget styles itself to match.
+For partners whose risk posture requires on-chain verifiability,
+Path publishes the prediction stream through a Chainlink Runtime
+Environment workflow. The workflow runs in a decentralised oracle
+network, signs the prediction tuple, and posts the result on-chain.
+Any vault contract on any supported chain can read the signed signal
+with cryptographic guarantees. The on-chain feed is the recommended
+shape for partners who want verifiability instead of operational
+trust in Path's off-chain compute.
 
 ## Deployment
 
 <CardGroup cols={2}>
   <Card title="Hosted" icon="cloud">
-    Path operates the API. Partners hit
-    `api.pathprotocol.finance/v1`. Standard rate limits + SLA
-    documented per agreement.
+    Path operates the surface; the partner consumes it. Standard
+    SLA and rate limits documented per agreement.
   </Card>
-  <Card title="Self-host (Enterprise)" icon="server">
-    Partners can self-host the prediction stream behind their own
-    edge. The model artefacts ship as signed binaries; the partner
-    runs them inside their own infrastructure. Useful for partners
-    with strict data-residency requirements.
+  <Card title="Self-host" icon="server">
+    Available for partners with strict data-residency requirements.
+    Model artefacts ship as signed binaries; the partner runs them
+    inside their own infrastructure.
   </Card>
 </CardGroup>

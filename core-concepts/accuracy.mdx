@@ -1,70 +1,45 @@
 ---
 title: "Accuracy"
-description: "Honest accuracy bands: test, live-full-universe, and live-carve-out at high confidence."
+description: "Three published accuracy surfaces: test, live full universe, and live carve-out at high confidence."
 ---
 
-Accuracy claims in DeFi are usually marketing. We publish three
-distinct accuracy surfaces because they answer different questions and
-because conflating them is how bad allocation decisions get made.
+Path publishes three accuracy surfaces. Each answers a different
+question; conflating them is how allocation decisions get distorted,
+so they are reported separately and recomputed every 30 minutes from
+canonical SQL.
 
 ## The three surfaces
 
 <CardGroup cols={1}>
   <Card title="Test set" icon="flask">
-    The accuracy on the held-out evaluation slice from training time.
-    Predictions made on data the model has never seen. **Cross-validated
-    test-set accuracy lands in the high 60s** for the 1-day directional
-    model, with per-mechanism specialists scoring in the low 80s on
-    their own protocol family.
+    Cross-validated accuracy on the held-out evaluation slice from
+    training. **Test-set sign-based accuracy lands in the high 60s**
+    for the 1-day directional model, with per-mechanism specialists
+    scoring in the low 80s on their own protocol family.
   </Card>
   <Card title="Live, full universe" icon="globe">
-    The accuracy across every pool we monitor, post-deployment, on
-    forward-resolved data. This is the most conservative number and
-    the right one for "how does the model actually behave in the
-    wild". **Live full-universe sign-based accuracy currently sits in
-    the low 50s** for the 1-day model, lifted by a calibration retrain
-    that landed in the last week.
+    Accuracy across every monitored pool, post-deployment, on
+    forward-resolved data. The most conservative number and the right
+    one for "how does the model behave in the wild".
+    **Live full-universe sign-based accuracy sits in the low 50s** for
+    the 1-day model.
   </Card>
   <Card title="Live, carve-out cohort, high confidence" icon="bullseye">
-    The accuracy on the subset of pools where Path has the deepest
-    coverage and the highest signal density, filtered to predictions
-    where the model assigned ≥85% confidence. This is the headline
-    number we cite to institutional partners because it is the
-    operational range a Strategy Manager would actually trade.
-    **Carve-out high-confidence sign-based accuracy: ~59.5%**, vs. the
-    DeFiLlama random-walk baseline of 53.5%. The lift is statistically
-    significant at p ≈ 0.0001.
+    Accuracy on the cohort of pools where Path has the deepest
+    coverage, filtered to predictions where the model assigned
+    85% or higher confidence. This is the operational range a
+    strategy manager would actually trade.
+    **Carve-out high-confidence sign-based accuracy: ~59.5%**, vs.
+    the DeFiLlama random-walk baseline of 53.5%. The lift is
+    statistically significant at p ~ 0.0001.
   </Card>
 </CardGroup>
 
-## Why the gap between test and live
-
-Test accuracy and live accuracy diverge for three reasons:
-
-1. **Distribution shift.** Live data drifts from training data over
-   time. We mitigate with a three-day retrain cadence and a live
-   accuracy gate that flags drift.
-2. **Per-pool heterogeneity.** Some pools have richer signal coverage
-   than others. The carve-out cohort exists to surface the operational
-   range where coverage and signal density are strongest.
-3. **Confidence-band stratification.** Calibrated models concentrate
-   accuracy at the high-confidence end. Reporting the un-stratified
-   mean obscures that. The high-confidence subset is the relevant
-   one for an allocator who will only act on high-confidence calls.
-
-## Aspirational ceiling
-
-Published research on stablecoin 1-day directional classifiers tops
-out around 71–72%. That is the ceiling we are targeting, not 90%.
-Direction prediction on chaotic systems has a real ceiling and
-overpromising is how products lose institutional credibility.
-
 ## Integrity layer
 
-A continuous-loop verifier daemon re-computes every accuracy number
-shown on Path surfaces (admin dashboards, public docs, partner-facing
-exports) from the canonical SQL every 30 minutes. Drift greater than
-0.5 percentage points pages our on-call and auto-files a ticket. This
-is the operational hygiene behind every number on this site—numbers
-that drift silently are how trust gets destroyed in a single bad
-demo.
+A continuous-loop verifier daemon recomputes every accuracy number
+shown on any Path surface (admin dashboards, public docs,
+partner-facing exports) from the canonical SQL every 30 minutes.
+Drift greater than 0.5 percentage points pages on-call and auto-files
+a ticket. Every number on this site is the same number the
+verifier last published.

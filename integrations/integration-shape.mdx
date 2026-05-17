@@ -44,18 +44,17 @@ how we are positioning Path for modular rail integrations.
 ## Two surfaces
 
 <CardGroup cols={2}>
-  <Card title="API" icon="code">
-    REST + GraphQL endpoints serving the prediction stream, the
-    liquidity-impact context, the historical accuracy registry, and
-    the rebalance-cost estimator. Documented endpoints land at
-    `api.pathprotocol.finance/v1`.
+  <Card title="Private API" icon="code">
+    The prediction stream, the liquidity-impact context, the
+    historical accuracy registry, and the rebalance-cost estimator,
+    available to the partner under the integration contract. Schema
+    and access tokens handled inside the partnership conversation.
   </Card>
-  <Card title="Widget" icon="rectangle-list">
-    Drop-in React widget for embedding inside an existing earn or
-    treasury surface. Reads the connected wallet, calls Path's API,
-    renders the prediction + allocation suggestion + the break-even
-    panel. White-label-able to the embedding partner's design
-    system.
+  <Card title="Embeddable widget" icon="rectangle-list">
+    Drop-in widget for embedding inside an existing earn or treasury
+    surface. Reads the connected wallet, surfaces the prediction and
+    allocation suggestion with break-even, white-labelled to the
+    partner's design system.
   </Card>
 </CardGroup>
 

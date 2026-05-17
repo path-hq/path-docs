@@ -1,11 +1,12 @@
 ---
 title: "Signal Mesh"
-description: "The prediction engine behind Path: ~117 signals, six categories, multi-horizon directional and continuous outputs."
+description: "The prediction engine behind Path: multi-horizon directional and continuous outputs with confidence scoring."
 ---
 
 Signal Mesh is Path's prediction engine. Every 15 minutes it ingests
-~117 signals across six categories, fans them into a multi-horizon
-model stack, and emits confidence-scored predictions per pool.
+roughly 117 signals across six categories, fans them into a
+multi-horizon model stack, and emits confidence-scored predictions
+for every monitored pool.
 
 ## Signal inputs
 
@@ -27,68 +28,69 @@ model stack, and emits confidence-scored predictions per pool.
     rates, category-level capital flow.
   </Card>
   <Card title="Per-protocol specialists" icon="microscope">
-    Mechanism-specific signals like AMM-yield discount evolution,
+    Mechanism-specific signals: AMM-yield discount evolution,
     vault-level curator action, parameter-drift detection, governance
     activity.
   </Card>
   <Card title="Cross-protocol correlation" icon="diagram-project">
-    Pair-wise APY co-movement matrix, regime-flip detection, leader–
-    lagger graph from a 60-day rolling window.
+    Pair-wise APY co-movement matrix, regime-flip detection, leader
+    and lagger graph from a 60-day rolling window.
   </Card>
 </CardGroup>
 
 ## Model stack
 
-The active stack publishes predictions on three horizons:
+Signal Mesh emits predictions on four horizons. Each horizon is a
+distinct model trained on the data shape that horizon answers best.
 
 <AccordionGroup>
-  <Accordion title="Intraday 6-hour direction">
-    Sub-day directional signal used for tight-cadence rebalance
-    triggers. Sign-based accuracy, statistically significant against
-    the random-walk baseline at standard test thresholds. Best for
-    pools where utilisation changes quickly and rebalancing cost is
-    low.
+  <Accordion title="6-hour direction">
+    Sub-day directional signal for tight-cadence rebalance triggers.
+    The right horizon when utilisation can shift inside a single
+    trading day and rebalance cost is low.
   </Accordion>
   <Accordion title="1-day direction">
-    Primary directional model. The number we publish most prominently
-    in product surfaces. Calibrated for confidence-score
-    interpretability; outputs are usable as both a binary trigger and a
+    The primary directional model. Calibrated for confidence-score
+    interpretability and used as the headline directional signal on
+    product surfaces. Output works as a binary trigger or a
     confidence-weighted scaler.
   </Accordion>
+  <Accordion title="7-day APY estimate">
+    Continuous APY forecast for the 7-day forward window, decomposed
+    into base yield, reward yield, and demand components per protocol
+    family. The decomposition lets the estimator handle protocols
+    with structurally different rate mechanics (lending,
+    AMM-style fixed yield, governance-set rates) inside one stack.
+  </Accordion>
   <Accordion title="30-day stability">
-    Three-class output: trending up, trending down, stable. Used for
-    long-horizon allocation context and to flag pools where the
-    1-day signal is noise around a stable mean rather than a real
-    directional move.
+    Three-class signal: trending up, trending down, stable. The
+    long-horizon allocation context. Surfaces pools where the
+    short-horizon signal is noise around a stable mean rather than a
+    real directional move.
   </Accordion>
 </AccordionGroup>
 
-In addition to the three directional heads, Signal Mesh emits:
+Two structural layers sit alongside the horizon stack:
 
-- A **continuous APY estimator** for the 7-day forward horizon,
-  decomposed into base yield, reward yield, and demand components per
-  protocol family. The decomposition is what lets the estimator handle
-  protocols with structurally different rate mechanics—lending,
-  AMM-style fixed yield, and governance-set rates—without forcing
-  them through a single feature set.
-- A **per-mechanism specialist** for AMM-style yield where the
-  underlying pricing is mechanically different from utilisation-curve
-  lending. Specialists score ~20 percentage points higher than the
-  generalist on their own protocol family on test data.
-- A **hybrid composite score** combining the directional output, the
-  continuous estimator, native risk signals, and liquidity-impact
-  context. The hybrid score is what drives the front-page allocation
+- **Per-mechanism specialists.** AMM-style yield runs through its
+  own specialist because the underlying pricing is mechanically
+  different from utilisation-curve lending. Specialists outperform
+  the generalist by a meaningful margin on their own protocol
+  family.
+- **Hybrid composite score.** Combines the directional output, the
+  continuous APY estimator, native risk signals, and liquidity-impact
+  context into the single score that drives the front-page allocation
   ranking.
 
 ## Retrain cadence
 
-The directional models retrain on a three-day cadence using a rolling
-window. A live-accuracy gate on every active model runs every 10
-minutes and auto-deprecates any model that falls below the public
-DeFiLlama baseline on a 100+ sample window. The gate auto-files a
-ticket and pages the team on failure—calibration drift is one of the
-few classes of bug that can ship silently in a model pipeline, and we
-want that loop closed.
+The directional models retrain on a rolling three-day cadence. A
+live-accuracy gate runs every 10 minutes against every active model
+and auto-deprecates any head that falls below the public DeFiLlama
+baseline on a 100+ sample window. The gate auto-files a ticket and
+pages the team on failure. Calibration drift is one of the few
+classes of bug that can ship silently in a model pipeline, and the
+gate keeps that loop closed.
 
 ## How predictions surface
 
@@ -96,11 +98,10 @@ Every prediction is published with:
 
 - The horizon (6 hours, 1 day, 7 days, 30 days)
 - A direction class (up, down, stable)
-- A calibrated confidence score (0–100)
+- A calibrated confidence score (0 to 100)
 - A continuous APY estimate
-- A liquidity-impact context: "you would represent X% of this pool's
-  TVL with a $Y deposit"
+- A liquidity-impact context that answers "what would my deposit do
+  to this pool's APY"
 
-The last item is the answer to the question every allocator asks
-first—"if I move size, do I cannibalise the yield I am chasing?"—and
-is documented in detail under [Liquidity impact](/core-concepts/liquidity-impact).
+The last item is documented in detail under
+[Liquidity impact](/core-concepts/liquidity-impact).
