@@ -38,7 +38,6 @@
     {
       "group": "Product",
       "pages": [
-        "core-concepts/three-phase-product",
         "core-concepts/signal-mesh",
         "core-concepts/accuracy",
         "core-concepts/liquidity-impact"
