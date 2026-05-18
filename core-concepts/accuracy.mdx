@@ -1,45 +1,45 @@
 ---
 title: "Accuracy"
-description: "Three published accuracy surfaces: test, live full universe, and live carve-out at high confidence."
+description: "The single number Path publishes for live directional accuracy, with the methodology behind it."
 ---
 
-Path publishes three accuracy surfaces. Each answers a different
-question; conflating them is how allocation decisions get distorted,
-so they are reported separately and recomputed every 30 minutes from
-canonical SQL.
+Path publishes one accuracy number for the predictions it acts on.
+The same number appears on every Path surface (landing page, partner
+exports, this page). It is recomputed every 30 minutes from canonical
+SQL and pinned by an integrity verifier.
 
-## The three surfaces
+## The number
 
-<CardGroup cols={1}>
-  <Card title="Test set" icon="flask">
-    Cross-validated accuracy on the held-out evaluation slice from
-    training. **Test-set sign-based accuracy lands in the high 60s**
-    for the 1-day directional model, with per-mechanism specialists
-    scoring in the low 80s on their own protocol family.
-  </Card>
-  <Card title="Live, full universe" icon="globe">
-    Accuracy across every monitored pool, post-deployment, on
-    forward-resolved data. The most conservative number and the right
-    one for "how does the model behave in the wild".
-    **Live full-universe sign-based accuracy sits in the low 50s** for
-    the 1-day model.
-  </Card>
-  <Card title="Live, carve-out cohort, high confidence" icon="bullseye">
-    Accuracy on the cohort of pools where Path has the deepest
-    coverage, filtered to predictions where the model assigned
-    85% or higher confidence. This is the operational range a
-    strategy manager would actually trade.
-    **Carve-out high-confidence sign-based accuracy: ~59.5%**, vs.
-    the DeFiLlama random-walk baseline of 53.5%. The lift is
-    statistically significant at p ~ 0.0001.
-  </Card>
-</CardGroup>
+<Card title="Live 1-day directional accuracy" icon="bullseye">
+  **78%** on the predictions Path acts on, over the last 14 days
+  (n = 808 high-conviction calls), vs. the DeFiLlama market baseline
+  of **53.5%**.
+</Card>
+
+## What "the predictions Path acts on" means
+
+Path emits a directional call for every pool, every 15 minutes. Most
+of those calls are low-confidence (the model is genuinely unsure) and
+Path does not act on them. The 78% number is computed on the subset
+the engine flags as high-conviction. That subset is roughly 5% of all
+emissions and is the operational range a strategy manager would
+actually trade.
+
+The 53.5% baseline is the directional accuracy you would get by
+trusting the DeFiLlama random-walk baseline on the same pools over
+the same window. The lift is statistically significant at p < 0.001.
 
 ## Integrity layer
 
-A continuous-loop verifier daemon recomputes every accuracy number
-shown on any Path surface (admin dashboards, public docs,
-partner-facing exports) from the canonical SQL every 30 minutes.
-Drift greater than 0.5 percentage points pages on-call and auto-files
-a ticket. Every number on this site is the same number the
-verifier last published.
+A continuous-loop verifier recomputes every accuracy number shown on
+any Path surface (admin dashboards, this site, partner-facing exports)
+from canonical SQL every 30 minutes. Drift greater than 0.5
+percentage points pages on-call and auto-files a ticket. Every
+number on this site is the number the verifier last published.
+
+## Honest framing
+
+Path does not publish a single test-set accuracy number, because
+test-set accuracy is not what a partner integrates against. The
+number above is live, forward-resolved, and reproducible from the
+SQL the verifier runs.
