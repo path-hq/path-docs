@@ -12,10 +12,10 @@ read.
 
 <CardGroup cols={2}>
   <Card title="What Path is" icon="brain">
-    A prediction engine plus an embeddable surface. Signal Mesh ingests
-    ~117 signals every 15 minutes and emits confidence-scored,
-    multi-horizon predictions per pool. The intelligence drives
-    automated allocation logic in later phases; today it is read-only.
+    A prediction engine plus an embeddable surface. Signal Mesh
+    combines on-chain protocol health, prediction market data, and
+    macro signals every 15 minutes and emits confidence-scored,
+    multi-horizon predictions per pool.
   </Card>
   <Card title="What Path is not" icon="ban">
     Not a fund. Not advisory-only. Not a yield aggregator that chases
@@ -37,14 +37,8 @@ read.
 ## Step-by-step evaluation path
 
 <Steps>
-  <Step title="Read the product surface">
-    Start with [Three-phase product](/core-concepts/three-phase-product)
-    to understand how Path's surface evolves from read-only to
-    transaction-crafting to policy-engine automation. This is the
-    deployment shape; everything else follows from it.
-  </Step>
   <Step title="Read the engine">
-    Then [Signal Mesh](/core-concepts/signal-mesh) for the signal
+    Start with [Signal Mesh](/core-concepts/signal-mesh) for the signal
     inputs, model stack, and retrain cadence. The honest accuracy
     bands live at [Accuracy](/core-concepts/accuracy); the answer to
     "what happens to APY if I deposit size" lives at
@@ -65,7 +59,7 @@ read.
   </Step>
   <Step title="Ask the question we have not answered here">
     The fastest channel for an integration deep-dive is direct contact
-    at [fares@pathprotocol.finance](mailto:fares@pathprotocol.finance).
+    at [hello@pathprotocol.finance](mailto:hello@pathprotocol.finance).
     We can schedule a 30-minute call covering the specific bits this
     page does not.
   </Step>
@@ -81,9 +75,8 @@ a yield-source slot. Concretely:
     A signal-driven allocation policy: which yield sources to weight,
     when to rebalance, with what conviction. Every recommendation
     carries a confidence score and the SHAP-style explainability
-    behind it. Path scores ~296 pools every 15 minutes and emits
-    predictions across 6h, 1d, and 30d horizons plus a continuous
-    7-day APY estimator.
+    behind it. Path scores pools every 15 minutes and emits
+    predictions across multiple horizons.
   </Accordion>
   <Accordion title="What the rail contributes">
     Custody, on-chain execution, NAV computation, KYC and
@@ -109,12 +102,12 @@ say so.
 
 <AccordionGroup>
   <Accordion title="Where do allocation decisions originate?">
-    In Phase 1, Path publishes signal; the user decides. In Phase 2,
-    Path crafts the rebalance transaction and an authorised signer
-    (an asset manager wallet, an operator key, a partner contract)
-    submits it. In Phase 3, a policy engine signs against a
-    user-defined risk profile within partner-set guardrails. The phase
-    the integration sits in is a contract decision per partner.
+    Today, Path publishes signal and the user decides. Later
+    capabilities include Path crafting the rebalance transaction for
+    an authorised signer to submit, and ultimately a policy engine
+    signing against a user-defined risk profile within partner-set
+    guardrails. The surface a given integration sits in is a contract
+    decision per partner.
   </Accordion>
   <Accordion title="Can we drive allocation from your API instead of from your UI?">
     Yes. `api.pathprotocol.finance/v1` exposes the prediction stream,
@@ -140,16 +133,15 @@ say so.
     to operate its own validator set.
   </Accordion>
   <Accordion title="What is your model accuracy honestly?">
-    Three bands, and we publish all three. Test-set sign-based
-    accuracy is in the high 60s for the 1-day directional model.
-    Live full-universe sign-based accuracy currently sits in the low
-    50s. Live carve-out high-confidence (the operational range a
-    strategy manager would actually trade) lands around 59.5% vs the
-    DeFiLlama random-walk baseline of 53.5%, statistically significant
-    at p around 0.0001. Per-protocol specialists score in the low 80s
-    on their own protocol family. The published research ceiling on
-    stablecoin 1-day directional classifiers is around 71-72%; that is
-    the band we are targeting, not 90%.
+    On the high-conviction calls Path actually acts on, accuracy
+    over the last 14 days is around 78% (n=808) vs the DeFiLlama
+    random-walk baseline of 53.5%. Across the full pool universe
+    accuracy sits closer to baseline; Path's edge comes from the
+    confidence gating, not from claiming uniform accuracy on every
+    pool. The published research ceiling on stablecoin short-horizon
+    directional models is in the low 70s; that is the band we are
+    targeting, not 90%. See [Accuracy](/core-concepts/accuracy) for
+    the breakdown.
   </Accordion>
   <Accordion title="What happens to predicted APY if I deposit at size?">
     The liquidity-impact context block on every prediction answers
@@ -175,15 +167,14 @@ say so.
     embedding partner's incorporation thresholds.
   </Accordion>
   <Accordion title="What is the regulatory shape?">
-    Phase 1 (today) is read-only information; no transactions, no
-    custody, no managed-product framing. Zero regulatory surface.
-    Phase 2 (transaction crafting) introduces a regulatory dependency
-    that we structure against per-partner because the licensing
-    obligation depends on the embedding partner's jurisdiction.
-    Phase 3 (policy automation) requires the framework Phase 2 forces
-    us into. We engage the regulatory framework inside each
-    integration conversation, not by committing to one global
-    structure.
+    Today's surface is read-only information: no transactions, no
+    custody, no managed-product framing, and zero regulatory surface
+    on Path's side. Any later capability that involves Path crafting
+    or signing transactions introduces a regulatory dependency we
+    structure against per-partner because the licensing obligation
+    depends on the embedding partner's jurisdiction. We engage the
+    regulatory framework inside each integration conversation, not
+    by committing to one global structure.
   </Accordion>
   <Accordion title="How do you handle drift?">
     A continuous-loop verifier daemon re-computes every accuracy
@@ -242,7 +233,7 @@ We do not require:
   </Card>
   <Card title="API root" icon="code" href="https://api.pathprotocol.finance/v1">
     Header-authenticated REST and GraphQL surface. Request keys via
-    [fares@pathprotocol.finance](mailto:fares@pathprotocol.finance).
+    [hello@pathprotocol.finance](mailto:hello@pathprotocol.finance).
   </Card>
   <Card title="This documentation" icon="book" href="https://docs.pathprotocol.finance">
     The doc surface a PM should read end-to-end before the first call.

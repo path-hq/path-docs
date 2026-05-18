@@ -1,17 +1,15 @@
 ---
 title: "Railnet API audit (2026-05-15)"
-description: "Internal audit: what Railnet's public docs at docs.railnet.org expose vs what Path has implemented vs what we should build next."
+description: "Audit: what Railnet's public docs at docs.railnet.org expose vs what Path has implemented vs what we should build next."
 ---
 
-This page is an internal audit, not a partner-facing surface. It
-captures the state of Kiln/Railnet's published documentation as of
-2026-05-15 (two days after Fares' discovery call with Dan Biton, VP
-Special Projects at Kiln), cross-references it against the internal
-Railnet onboarding spec, and lists the next implementable actions.
+This page captures the state of Kiln/Railnet's published documentation
+as of 2026-05-15, cross-references it against the internal Railnet
+onboarding spec, and lists the next implementable actions.
 
 Source map for the upstream surface: `docs.railnet.org/llms.txt`
 (complete documentation index) plus the per-section pages listed
-below. Internal reference: shared-brain/specs/railnet-strategy-manager-onboarding.md.
+below.
 
 ## What is published upstream
 
@@ -110,36 +108,34 @@ contract surface.
 
 <AccordionGroup>
   <Accordion title="Path-side intelligence (live)">
-    Signal Mesh ingests around 117 signals every 15 minutes across
-    Aave V3, Aave V4 (multi-hub), Morpho Blue, Compound V3 (USDC and
-    USDT), and Pendle on Ethereum, plus Aave V3, Morpho Blue,
-    Compound V3, Aerodrome, and Moonwell on Base behind a feature
-    flag (ALF-671 Phase 1B). 1-day binary directional classifier at
-    around 61% CPCV / 62% holdout / 60% carve-out high-confidence.
-    Pendle sub-specialist at around 81% on its own protocol family.
-    7-day continuous APY estimator. Three-class 30-day stability
-    head. Per-pool liquidity-impact context. SHAP explainability per
-    recommendation.
+    Signal Mesh combines on-chain protocol health, prediction market
+    data, and macro signals every 15 minutes across Aave V3, Aave V4
+    (multi-hub), Morpho Blue, Compound V3 (USDC and USDT), and Pendle
+    on Ethereum, plus Aave V3, Morpho Blue, Compound V3, Aerodrome,
+    and Moonwell on Base behind a feature flag. The directional model
+    delivers around 78% accuracy on the high-conviction calls Path
+    acts on (last 14 days, n=808) vs the DeFiLlama 53.5% baseline,
+    with a Pendle protocol-family specialist scoring higher on its
+    own family. Per-pool liquidity-impact context. SHAP explainability
+    per recommendation.
   </Accordion>
   <Accordion title="Path-side surface (live)">
     Web app at app.pathprotocol.finance with the opportunity page,
     per-pool detail panels, and a connected-wallet read-only flow.
     REST and GraphQL API at api.pathprotocol.finance/v1 covering
     pools, predictions, briefing, and backtest endpoints. Docs at
-    docs.pathprotocol.finance with seven content pages and the
-    integration onboarding flow you are reading now.
+    docs.pathprotocol.finance with the content pages and the
+    integration onboarding flow.
   </Accordion>
   <Accordion title="Railnet-facing scope (in flight)">
-    Internal onboarding spec at
-    shared-brain/specs/railnet-strategy-manager-onboarding.md
-    captures the 17 open Q&A gates from the 2026-05-13 Dan Biton
-    call, of which 1 is fully answered (Salik Kogan and Tal Zerkone
-    Fireblocks intros), 4 are partially answered (API+widget
-    integration, vehicle expansion list, auto-NAV, Signal Mesh UI
-    embedding), and 12 are routed to ALF-899 for the Darshan/Martin
-    follow-up call. ALF-860 (Signal Mesh on Chainlink CRE Sepolia
-    POC) is the on-chain verifiable-signal track. ALF-873 (RWA
-    sleeve scoping) covers the BUIDL/ACRED side.
+    Internal onboarding spec captures the open Q&A gates from the
+    2026-05-13 Dan Biton discovery call, of which one is fully
+    answered (Salik Kogan and Tal Zerkone Fireblocks intros), four
+    are partially answered (API+widget integration, vehicle expansion
+    list, auto-NAV, Signal Mesh UI embedding), and the remainder are
+    routed to the Darshan/Martin follow-up call. A Signal Mesh on
+    Chainlink CRE Sepolia POC is the on-chain verifiable-signal
+    track; an RWA sleeve scoping effort covers the BUIDL/ACRED side.
   </Accordion>
   <Accordion title="Path-side adapters NOT yet built">
     Path does not currently emit Railnet-compatible STEAM
@@ -148,8 +144,8 @@ contract surface.
     Strategy's `accounting.rebalance(...)` call expects. Path does
     not currently consume Railnet's Reporting API for partner-side
     NAV cross-validation. The on-chain verifiable signal track
-    (ALF-860 CRE Sepolia POC) is in-review but not yet wired into a
-    Railnet vault contract.
+    (CRE Sepolia POC) is in-review but not yet wired into a Railnet
+    vault contract.
   </Accordion>
 </AccordionGroup>
 
@@ -160,11 +156,11 @@ contract surface.
 | GraphQL state queries | Live on testnet | Not consumed | Add a thin Path-side client to query an Allocation Strategy's `sectorState` for cross-validation against Path's own pool ranking. |
 | Reporting API | Referenced, light public surface | Not consumed | Investigate auth + endpoint detail with Kiln in the Darshan/Martin call. Use it to compare Signal Mesh's predicted post-rebalance APY against Railnet's realised post-rebalance NAV. |
 | Allocation Strategy contract surface | Documented (factory + rebalance + role) | Not yet integrated | Smallest end-to-end POC: deploy a Path-managed Allocation Strategy on Base testnet, wire `accounting.rebalance(...)` calls to Signal Mesh's recommended weights, prove end-to-end. |
-| Advanced Strategy + policy engine | Documented (Zodiac Roles Modifier v2) | Not yet integrated | Phase 2 fit: Path crafts the transaction, the policy engine validates, an authorised signer submits. Requires the policy-engine configuration to whitelist the protocols and functions Path's strategy uses. |
-| Conduit distribution layer | Documented | Not yet integrated | Phase 1 surface: a Path-curated Allocation Strategy fronted by a Conduit issued by a distribution partner (Ledger Live, Crypto.com, Trust Wallet are the named partners). Belongs to the BD track, not the engineering track. |
-| Verifiable-signal output | No native external-signal hook in Railnet contracts | ALF-860 in-review (CRE Sepolia POC) | Bridging path: Path emits DON-signed prediction tuples; a Path-side helper contract reads them and is whitelisted by the Advanced Strategy policy engine as a permitted callee. Engages Chainlink + Railnet + Path. |
+| Advanced Strategy + policy engine | Documented (Zodiac Roles Modifier v2) | Not yet integrated | Future fit: Path crafts the transaction, the policy engine validates, an authorised signer submits. Requires the policy-engine configuration to whitelist the protocols and functions Path's strategy uses. |
+| Conduit distribution layer | Documented | Not yet integrated | Near-term surface: a Path-curated Allocation Strategy fronted by a Conduit issued by a distribution partner (Ledger Live, Crypto.com, Trust Wallet are the named partners). Belongs to the BD track, not the engineering track. |
+| Verifiable-signal output | No native external-signal hook in Railnet contracts | CRE Sepolia POC in-review | Bridging path: Path emits DON-signed prediction tuples; a Path-side helper contract reads them and is whitelisted by the Advanced Strategy policy engine as a permitted callee. Engages Chainlink + Railnet + Path. |
 | Pendle adapter | Listed as planned custom adapter | Native Pendle sub-specialist live | Path can advocate Pendle adapter prioritisation in Kiln's roadmap, since Pendle is the single highest-accuracy mechanism in Signal Mesh. |
-| Risk + compliance hooks | AccountList + sanctions oracle at Conduit layer | Native risk model (Open Sanctions + Chainalysis + pool-jurisdiction scanner) | Map Path's native risk output into the AccountList sanctions-oracle interface so a Conduit deployment can read Path's allow/block list as a feed. |
+| Risk + compliance hooks | AccountList + sanctions oracle at Conduit layer | Native risk model (Open Sanctions + commercial provider + pool-jurisdiction scanner) | Map Path's native risk output into the AccountList sanctions-oracle interface so a Conduit deployment can read Path's allow/block list as a feed. |
 
 ## What to implement next
 
@@ -178,8 +174,8 @@ Ranked by leverage on the Dan Biton / Darshan / Martin conversation.
     Morpho Blue), and wire `accounting.rebalance(...)` calls to
     Signal Mesh's daily recommended weights. End state: a public
     testnet contract demonstrating Path's allocation logic running
-    inside a Railnet Allocation Strategy. Ticket recommendation: new
-    P1, scope around two weeks of focused engineering.
+    inside a Railnet Allocation Strategy. Scope around two weeks of
+    focused engineering.
   </Step>
   <Step title="Reporting API client + NAV cross-validator">
     Thin client around `docs.api.railnet.org` to pull
@@ -188,34 +184,31 @@ Ranked by leverage on the Dan Biton / Darshan / Martin conversation.
     the verifier daemon Path attaches to every Railnet integration:
     if Railnet-reported NAV drifts from Path-predicted, Path's
     accuracy publishing pipeline reflects it within 30 minutes.
-    Ticket recommendation: new P2, scope around one week, blocked
-    until the testnet POC above is live.
+    Scope around one week, blocked until the testnet POC above is
+    live.
   </Step>
   <Step title="CRE Sepolia POC -> Railnet policy-engine integration">
-    Once ALF-860 lands a Chainlink CRE Sepolia POC publishing
-    DON-signed prediction tuples, the next step is wiring a Path
-    helper contract that consumes the signed tuple and is whitelisted
-    by an Advanced Strategy policy engine as a permitted callee.
-    Three-party coordination (Path + Kiln + Chainlink). This is the
-    Phase 2 verifiable-signal track. Ticket recommendation: depends
-    on ALF-860 status flip to Done; file as follow-on P1.
+    Once the Chainlink CRE Sepolia POC lands and publishes DON-signed
+    prediction tuples, the next step is wiring a Path helper contract
+    that consumes the signed tuple and is whitelisted by an Advanced
+    Strategy policy engine as a permitted callee. Three-party
+    coordination (Path + Kiln + Chainlink). This is the verifiable-
+    signal follow-on once the CRE POC ships.
   </Step>
   <Step title="Map Path's risk output into Railnet's AccountList feed">
     Path's native pool-jurisdiction scanner produces a pool-level
     allow/block determination per partner incorporation profile.
     Surface that determination via a feed that conforms to Railnet's
     AccountList sanctions-oracle interface so a Conduit operator can
-    subscribe. Ticket recommendation: P2, scope around one week,
-    blocked on confirming the AccountList interface shape with Kiln
-    in the Darshan/Martin call.
+    subscribe. Scope around one week, blocked on confirming the
+    AccountList interface shape with Kiln in the Darshan/Martin call.
   </Step>
   <Step title="Advocate Pendle adapter prioritisation in Kiln's roadmap">
     Pendle is the single highest-accuracy mechanism inside Signal
-    Mesh (low-80s on its own protocol family vs the high-60s on the
-    generalist 1-day head). Pendle is listed as a planned custom
-    adapter in Railnet's supported-protocols doc. The conversation
-    fits into the Darshan/Martin call. No engineering ticket
-    needed; folds into the existing ALF-899 follow-up bundle.
+    Mesh on its own protocol family. Pendle is listed as a planned
+    custom adapter in Railnet's supported-protocols doc. The
+    conversation fits into the Darshan/Martin call. No engineering
+    work needed; folds into the existing follow-up bundle.
   </Step>
 </Steps>
 
@@ -248,8 +241,6 @@ raise in the integration deep-dive Dan offered to organise:
   VanEck) consume Conduits programmatically vs require separate
   negotiation?
 
-These questions fold into the existing ALF-899 Q&A bundle.
-
 ## Audit conclusion
 
 Railnet's documentation surface is materially more advanced than what
@@ -260,4 +251,6 @@ that did not exist two days ago. The two priorities that should
 unblock the Darshan/Martin call are (1) the testnet Allocation
 Strategy POC and (2) the Reporting API NAV cross-validator. The
 verifiable-signal track (CRE Sepolia + policy-engine whitelisting) is
-the Phase 2 follow-on once ALF-860 lands.
+the follow-on once the CRE POC ships.
+
+For integration deep-dive contact: [hello@pathprotocol.finance](mailto:hello@pathprotocol.finance).
