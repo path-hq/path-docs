@@ -61,5 +61,11 @@
   ],
   "footerSocials": {
     "x": "https://x.com/pathprotocolfi"
-  }
+  },
+  "redirects": [
+    {
+      "source": "/integrations/railnet-api-audit-2026-05-15",
+      "destination": "/integrations/integration-shape"
+    }
+  ]
 }
