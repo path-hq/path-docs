@@ -39,7 +39,6 @@
       "group": "Product",
       "pages": [
         "core-concepts/signal-mesh",
-        "core-concepts/accuracy",
         "core-concepts/liquidity-impact"
       ]
     },
@@ -66,6 +65,10 @@
     {
       "source": "/integrations/railnet-api-audit-2026-05-15",
       "destination": "/integrations/integration-shape"
+    },
+    {
+      "source": "/core-concepts/accuracy",
+      "destination": "/core-concepts/signal-mesh"
     }
   ]
 }
