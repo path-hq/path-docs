@@ -3,20 +3,17 @@ title: "Introduction"
 description: "Path is the intelligence layer for stablecoin yield."
 ---
 
-## What Path is
+What stablecoin yield will you earn next week? 5.2%? 6.8%? 4.1%? Most
+allocators cannot say with confidence. Yield fluctuates with on-chain
+protocol health, prediction-market signals, and macro conditions, and
+existing yield aggregators react to those shifts after the fact,
+burning returns on excessive rebalancing.
 
-Path is the intelligence layer for stablecoin yield. Companies and asset
-managers deposit idle stablecoins, and our prediction engine, Signal
-Mesh, tells them where the yield is likely to go, with what confidence,
-and what the rebalancing cost of moving would be.
-
-We do not chase the highest APY. We minimise net rebalancing friction
-and maximise the net yield after gas and slippage. Most existing yield
-aggregators are reactive and burn returns on excessive rebalancing;
-Path is predictive and confidence-scored.
-
-Path is a protocol with an intelligence layer. It is not a fund and it
-is not advisory-only.
+Path is the intelligence layer for stablecoin yield. Treasury managers,
+asset managers, and custodians deposit idle stablecoins into a partner
+rail; Path's prediction engine tells the rail where yield is likely to
+go, with what confidence, and what the rebalancing cost of moving
+would be.
 
 ## Who Path is for
 
@@ -46,9 +43,12 @@ is not advisory-only.
 ## How to read this site
 
 <CardGroup cols={2}>
+  <Card title="Quickstart" href="/quickstart" icon="bolt">
+    Five steps to evaluate Path in about ten minutes.
+  </Card>
   <Card title="Signal Mesh" href="/core-concepts/signal-mesh" icon="cubes">
     The prediction engine: signal inputs, model stack, confidence
-    calibration, and SHAP-style explainability.
+    calibration, and explainability.
   </Card>
   <Card title="Liquidity impact" href="/core-concepts/liquidity-impact" icon="droplet">
     What happens to predicted APY when an allocator deposits at size,
@@ -58,10 +58,12 @@ is not advisory-only.
     How Path slots into existing rails as an embeddable intelligence
     layer, via API and widget.
   </Card>
-  <Card title="Trust" href="/compliance" icon="shield-check">
-    Risk, compliance, and integrity posture.
+  <Card title="FAQ" href="/faq" icon="circle-question">
+    The questions partners ask us most often, answered in plain
+    English.
   </Card>
-  <Card title="Contact" href="/contact" icon="envelope">
-    Partnership conversations and technical deep-dives.
+  <Card title="Security" href="/security" icon="shield-check">
+    Custody model, signed signal output, operational security, and
+    audit roadmap.
   </Card>
 </CardGroup>
