@@ -28,69 +28,18 @@ execution stack is what moves capital.
 The trust boundary is: Path produces signals, the partner executes.
 Anything that crosses that boundary is a partner decision.
 
-## Signed signal output
-
-For partners that need on-chain verifiability rather than off-chain
-compute trust, Path is wiring signal output through a Chainlink CRE
-workflow. The DON-signed feed lets the consuming contract verify that
-the signal it is reading was produced by Path's pipeline and was not
-tampered with in transit.
-
-<Card title="Chainlink CRE Early Access" icon="link" href="/integrations/integration-shape">
-  Verifiable signal delivery for partners whose execution logic runs
-  on-chain.
-</Card>
-
-Off-chain consumers can continue to use the API; the signed feed is an
-add-on for partners that need stronger delivery guarantees.
-
 ## Operational security
 
-Path operates two surfaces of its own: the public API and the Signal
-Mesh prediction pipeline.
-
-<Steps>
-  <Step title="Deploy isolation">
-    Production deploys run on Railway in an isolated project. Staging
-    and production are separated at the infrastructure level. Secrets
-    are managed through the platform's secret store and never live in
-    source control.
-  </Step>
-  <Step title="Pipeline cadence">
-    The Signal Mesh pipeline runs every 15 minutes against canonical
-    on-chain and market data sources. Pipeline failures page on-call
-    automatically.
-  </Step>
-  <Step title="Continuous verification">
-    A verifier daemon re-computes every number published on Path
-    surfaces from canonical SQL every 30 minutes. Drift beyond the
-    published tolerance auto-files an incident ticket and pages
-    on-call.
-  </Step>
-  <Step title="Access controls">
-    Database access is role-isolated. Read access is logged. Write
-    access to production data is restricted to the pipeline service
-    account and a small set of operator identities.
-  </Step>
-</Steps>
-
-## Audit roadmap
-
-Path is pre-launch. We have not commissioned a third-party smart-
-contract audit because there is no smart contract surface yet. The
-audit roadmap follows the on-chain surface as it lands.
-
-<CardGroup cols={2}>
-  <Card title="Today" icon="square-check">
-    No smart contract surface. The audit-relevant surface is the
-    prediction pipeline and the signal API, both off-chain.
-  </Card>
-  <Card title="As on-chain surface lands" icon="clock">
-    Audit scope expands as on-chain components ship (CRE consumer
-    contract, vault adapters). Named auditor and timing will be
-    published here when scoped.
-  </Card>
-</CardGroup>
+- **Data isolation.** Production and staging are separated at the
+  infrastructure level. Secrets live in a managed secret store, never
+  in source control.
+- **Continuous verification.** Every number published on a Path
+  surface is re-computed from canonical SQL on a regular cadence;
+  drift beyond the published tolerance auto-files an incident and
+  pages on-call.
+- **Access controls.** Database access is role-isolated. Read access
+  is logged. Write access to production data is restricted to the
+  pipeline service account and a small set of operator identities.
 
 For specific audit, penetration test, or vendor risk questions during
 an integration review, reach out at
