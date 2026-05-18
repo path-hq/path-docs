@@ -33,7 +33,7 @@
   "navigation": [
     {
       "group": "Overview",
-      "pages": ["introduction"]
+      "pages": ["introduction", "quickstart"]
     },
     {
       "group": "Product",
@@ -54,7 +54,14 @@
       "group": "Trust",
       "pages": [
         "compliance",
+        "security",
         "contact"
+      ]
+    },
+    {
+      "group": "Help",
+      "pages": [
+        "faq"
       ]
     }
   ],

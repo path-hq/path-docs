@@ -1,0 +1,98 @@
+---
+title: "FAQ"
+description: "Frequently asked questions about Path for partners, custodians, and asset managers."
+---
+
+The questions partners ask us most often, answered in plain English. For
+anything not covered here, reach out at
+[hello@pathprotocol.finance](mailto:hello@pathprotocol.finance).
+
+<AccordionGroup>
+
+  <Accordion title="Is Path a fund?">
+    No. Path is a protocol and intelligence layer. Companies and partner
+    rails retain custody of their own stablecoins; Path produces yield
+    signals and confidence scores that those rails consume. We do not
+    pool capital, we do not manage capital on a discretionary basis, and
+    we do not issue fund units.
+  </Accordion>
+
+  <Accordion title="Who custodies the assets?">
+    The partner rail or custodian does. Path is non-custodial. Capital
+    sits either in the partner's existing custody stack (Fireblocks,
+    Anchorage, or similar) or directly in the underlying yield
+    protocol's smart contracts (Aave, Morpho, Compound, Pendle). Path
+    never holds user assets and has no withdrawal authority.
+  </Accordion>
+
+  <Accordion title="Does Path execute trades?">
+    Today, no. Path emits the signal and the rail executes the
+    rebalance. This keeps the trust boundary clean: the partner controls
+    every state-changing action, and Path is one input into their
+    allocation decision. On-chain signed signal output via the Chainlink
+    CRE workflow is in flight for partners that want verifiable signal
+    delivery on-chain.
+  </Accordion>
+
+  <Accordion title="How does Path make money?">
+    Path earns a curator fee on capital allocated under Path-driven
+    strategies inside partner rails. Fees are negotiated per partner and
+    are paid out of the spread, not on top of user yield. We do not
+    charge users directly and we do not run a token.
+  </Accordion>
+
+  <Accordion title="Who can integrate with Path?">
+    Custodians, modular rails, treasury platforms, on-chain asset
+    managers, and any surface that already manages stablecoin balances
+    on behalf of clients. The integration shape is an embeddable
+    intelligence layer: API for backend consumption, widget for
+    end-client surfaces, or both. See
+    [Integration shape](/integrations/integration-shape) for the
+    technical contract.
+  </Accordion>
+
+  <Accordion title="Are you in active integrations?">
+    We are in discussion with Kiln Railnet, and the Chainlink CRE Early
+    Access program is in flight. New named partners will be published
+    as integrations go live and the partner approves naming.
+  </Accordion>
+
+  <Accordion title="Do you publish accuracy numbers?">
+    Live accuracy numbers are published on the marketing site as a
+    real-time endpoint. We do not pin a static accuracy claim in docs
+    because the cohort, the prediction horizon, and the measurement
+    window all matter, and they update continuously. If you are
+    evaluating Path, ask us for a snapshot scoped to your use case and
+    we will pull the live numbers.
+  </Accordion>
+
+  <Accordion title="What chains do you cover?">
+    Ethereum mainnet today, with Base ingest activated 2026-05-17.
+    Additional EVM chains are on the roadmap and will activate as
+    partners require coverage on them.
+  </Accordion>
+
+  <Accordion title="What protocols are monitored?">
+    Aave V3 and V4, Morpho Blue, Compound V3, Pendle, Kamino, and
+    Spectra. The pool list inside each protocol updates continuously as
+    DeFiLlama and Path's own collectors discover new pools. The
+    [Signal Mesh](/core-concepts/signal-mesh) page describes how each
+    protocol's data is ingested and scored.
+  </Accordion>
+
+  <Accordion title="Is there a contract address?">
+    Path is currently an off-chain intelligence service. There is no
+    Path smart contract a user interacts with today. The signed signal
+    output via the Chainlink CRE workflow will surface DON-signed
+    contract addresses once the on-chain feed is live; those addresses
+    will be published here when they are deployed.
+  </Accordion>
+
+  <Accordion title="How do I get a demo?">
+    Email [hello@pathprotocol.finance](mailto:hello@pathprotocol.finance)
+    with your rail, surface, and approximate volume profile. We will
+    route you to the right person and schedule a walkthrough scoped to
+    your integration shape.
+  </Accordion>
+
+</AccordionGroup>
