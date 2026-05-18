@@ -39,9 +39,8 @@ read.
 <Steps>
   <Step title="Read the engine">
     Start with [Signal Mesh](/core-concepts/signal-mesh) for the signal
-    inputs, model stack, and retrain cadence. The honest accuracy
-    bands live at [Accuracy](/core-concepts/accuracy); the answer to
-    "what happens to APY if I deposit size" lives at
+    inputs, model stack, and retrain cadence. The answer to "what
+    happens to APY if I deposit size" lives at
     [Liquidity impact](/core-concepts/liquidity-impact).
   </Step>
   <Step title="Read the integration shape">
@@ -131,17 +130,6 @@ say so.
     signal with cryptographic guarantees. This converts off-chain
     compute trust into on-chain verifiability without requiring Path
     to operate its own validator set.
-  </Accordion>
-  <Accordion title="What is your model accuracy honestly?">
-    On the high-conviction calls Path actually acts on, accuracy
-    over the last 14 days is around 78% (n=808) vs the DeFiLlama
-    random-walk baseline of 53.5%. Across the full pool universe
-    accuracy sits closer to baseline; Path's edge comes from the
-    confidence gating, not from claiming uniform accuracy on every
-    pool. The published research ceiling on stablecoin short-horizon
-    directional models is in the low 70s; that is the band we are
-    targeting, not 90%. See [Accuracy](/core-concepts/accuracy) for
-    the breakdown.
   </Accordion>
   <Accordion title="What happens to predicted APY if I deposit at size?">
     The liquidity-impact context block on every prediction answers
