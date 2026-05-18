@@ -6,31 +6,30 @@ description: "Path is the intelligence layer for stablecoin yield."
 ## What Path is
 
 Path is the intelligence layer for stablecoin yield. Companies and asset
-managers deposit idle stablecoins, and our prediction engine—Signal
-Mesh—tells them where the yield is likely to go, with what confidence, and
-what the rebalancing cost of moving would be.
+managers deposit idle stablecoins, and our prediction engine, Signal
+Mesh, tells them where the yield is likely to go, with what confidence,
+and what the rebalancing cost of moving would be.
 
-We do not chase the highest APY. We minimise net rebalancing friction and
-maximise the net yield after gas and slippage. Most existing yield
-aggregators are reactive and burn returns on excessive rebalancing; Path is
-predictive and confidence-scored.
+We do not chase the highest APY. We minimise net rebalancing friction
+and maximise the net yield after gas and slippage. Most existing yield
+aggregators are reactive and burn returns on excessive rebalancing;
+Path is predictive and confidence-scored.
 
-Path is a protocol with an intelligence layer. It is not a fund, and it is
-not advisory-only. The intelligence drives automated allocation logic in
-later phases; today it is read-only.
+Path is a protocol with an intelligence layer. It is not a fund and it
+is not advisory-only.
 
 ## Who Path is for
 
 <CardGroup cols={2}>
   <Card title="Treasury managers" icon="building-columns">
-    CFOs and treasury operators managing idle stablecoin reserves who need
-    confidence-scored allocation guidance instead of reactive
+    CFOs and treasury operators managing idle stablecoin reserves who
+    need confidence-scored allocation guidance instead of reactive
     yield-chasing.
   </Card>
   <Card title="Strategy curators" icon="compass">
-    On-chain curators slotting into modular rail layers as a signal-driven
-    strategy manager, earning curator fees on capital deployed under
-    their curation.
+    On-chain curators slotting into modular rail layers as a
+    signal-driven strategy manager, earning curator fees on capital
+    deployed under their curation.
   </Card>
   <Card title="Asset managers" icon="chart-line">
     Asset managers running multi-protocol allocation books who want to
@@ -44,35 +43,20 @@ later phases; today it is read-only.
   </Card>
 </CardGroup>
 
-## The three-phase distribution shape
-
-<Steps>
-  <Step title="Phase 1 — Read-only intelligence (today)">
-    Connect a wallet, view predictions across every monitored pool,
-    drill into a specific pool to see directional signal with confidence
-    score and a gas-aware break-even. The user decides; Path provides
-    the signal. No transactions, no regulatory surface.
-  </Step>
-  <Step title="Phase 2 — Transaction crafting (next)">
-    Path generates the rebalance transactions; the user still signs and
-    submits. Natural fit for modular rail layers and DON-signed
-    verifiable-signal patterns where vault contracts read Path output
-    directly with cryptographic guarantees.
-  </Step>
-  <Step title="Phase 3 — Policy engine + automation">
-    Policy engine that automates allocation based on a user-defined risk
-    profile derived from on-chain behaviour analysis (yield-chaser vs.
-    conservative). Requires the regulatory framework that Phase 2
-    forces us into.
-  </Step>
-</Steps>
-
 ## How to read this site
 
 <CardGroup cols={2}>
-  <Card title="Product surface" href="/core-concepts/three-phase-product" icon="cubes">
-    What Path does end-to-end, the model stack, and the live accuracy
-    bands.
+  <Card title="Signal Mesh" href="/core-concepts/signal-mesh" icon="cubes">
+    The prediction engine: signal inputs, model stack, confidence
+    calibration, and SHAP-style explainability.
+  </Card>
+  <Card title="Confidence calibration" href="/core-concepts/accuracy" icon="gauge">
+    How Path scores its own predictions and what the calibration bands
+    mean for an allocator acting on them.
+  </Card>
+  <Card title="Liquidity impact" href="/core-concepts/liquidity-impact" icon="droplet">
+    What happens to predicted APY when an allocator deposits at size,
+    plus the break-even horizon math.
   </Card>
   <Card title="Integration shape" href="/integrations/integration-shape" icon="puzzle-piece">
     How Path slots into existing rails as an embeddable intelligence
