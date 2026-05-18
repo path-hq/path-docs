@@ -47,7 +47,8 @@
       "group": "Integration",
       "pages": [
         "integrations/integration-shape",
-        "integrations/api-and-widget"
+        "integrations/api-and-widget",
+        "integrations/onboarding"
       ]
     },
     {
