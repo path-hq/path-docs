@@ -3,10 +3,10 @@ title: "Signal Mesh"
 description: "The prediction engine behind Path: multi-horizon directional and continuous outputs with confidence scoring."
 ---
 
-Signal Mesh is Path's prediction engine. Every 15 minutes it ingests
-roughly 117 signals across six categories, fans them into a
-multi-horizon model stack, and emits confidence-scored predictions
-for every monitored pool.
+Signal Mesh is Path's prediction engine. It continuously synthesises
+on-chain protocol health, prediction-market signals, and macro
+indicators into confidence-scored predictions for every monitored
+pool.
 
 ## Signal inputs
 
@@ -16,7 +16,7 @@ for every monitored pool.
     reserve factors, kink slopes, interest-accrual fragility.
   </Card>
   <Card title="TVL flow + cohort behaviour" icon="users">
-    Institutional vs. retail cohort flow, 24h / 7d / 30d TVL deltas,
+    Institutional vs. retail cohort flow, multi-window TVL deltas,
     address-level rebalance event clustering.
   </Card>
   <Card title="Prediction-market + sentiment" icon="chart-mixed">
@@ -34,20 +34,21 @@ for every monitored pool.
   </Card>
   <Card title="Cross-protocol correlation" icon="diagram-project">
     Pair-wise APY co-movement matrix, regime-flip detection, leader
-    and laggard graph from a 60-day rolling window.
+    and laggard graph from a rolling correlation window.
   </Card>
 </CardGroup>
 
-## Model stack
+## Capability surface
 
 Signal Mesh emits predictions on four horizons. Each horizon is a
-distinct model trained on the data shape that horizon answers best.
+gradient-boosted classifier trained on the data shape that horizon
+answers best.
 
 <AccordionGroup>
-  <Accordion title="6-hour direction">
-    Sub-day directional signal for tight-cadence rebalance triggers.
-    The right horizon when utilisation can shift inside a single
-    trading day and rebalance cost is low.
+  <Accordion title="Sub-day direction">
+    Short-horizon directional signal for tight-cadence rebalance
+    triggers. The right horizon when utilisation can shift inside a
+    single trading day and rebalance cost is low.
   </Accordion>
   <Accordion title="1-day direction">
     The primary directional model. Calibrated for confidence-score
@@ -70,38 +71,49 @@ distinct model trained on the data shape that horizon answers best.
   </Accordion>
 </AccordionGroup>
 
-Two structural layers sit alongside the horizon stack:
+Three structural layers sit alongside the horizon stack:
 
 - **Per-mechanism specialists.** AMM-style yield runs through its
   own specialist because the underlying pricing is mechanically
   different from utilisation-curve lending. Specialists outperform
-  the generalist by a meaningful margin on their own protocol
-  family.
+  the generalist on their own protocol family.
+- **Regime detection.** A separate model surfaces correlation
+  regime flips, so the directional heads can be re-weighted when
+  cross-protocol relationships break.
 - **Hybrid composite score.** Combines the directional output, the
   continuous APY estimator, native risk signals, and liquidity-impact
-  context into the single score that drives the front-page allocation
-  ranking.
+  context into the single score that drives the allocation ranking.
 
-## Retrain cadence
+## Confidence calibration
 
-The directional models retrain on a rolling three-day cadence. A
-live-accuracy gate runs every 10 minutes against every active model
-and auto-deprecates any head that falls below the public DeFiLlama
-baseline on a 100+ sample window. The gate auto-files a ticket and
-pages the team on failure. Calibration drift is one of the few
-classes of bug that can ship silently in a model pipeline, and the
-gate keeps that loop closed.
+Every directional output ships with a calibrated confidence score on
+a 0 to 100 scale. The calibration step is run as a separate stage
+after model training, so confidence values map to empirical
+hit-rates and can be used as a gating threshold by downstream
+consumers. A live calibration verifier monitors drift between the
+score and observed forward outcomes; calibration is the class of
+silent bug a model pipeline is most exposed to, and the verifier
+keeps that loop closed.
+
+## Explainability
+
+Every prediction carries a per-signal attribution vector showing
+which inputs contributed most to the directional and confidence
+output. Allocators see the top contributing signals alongside the
+recommendation, so the model output is auditable at the level of
+a single decision rather than as a black-box score.
 
 ## How predictions surface
 
 Every prediction is published with:
 
-- The horizon (6 hours, 1 day, 7 days, 30 days)
+- The horizon (sub-day, 1 day, 7 days, 30 days)
 - A direction class (up, down, stable)
 - A calibrated confidence score (0 to 100)
 - A continuous APY estimate
+- A per-signal attribution vector
 - A liquidity-impact context that answers "what would my deposit do
   to this pool's APY"
 
-The last item is documented in detail under
+The liquidity-impact context is documented in detail under
 [Liquidity impact](/core-concepts/liquidity-impact).
