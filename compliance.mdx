@@ -1,42 +1,70 @@
 ---
 title: "Trust and compliance"
-description: "Risk, integrity, and regulatory posture."
+description: "Real-time address screening, smart-contract risk scoring, and pre-allocation gating."
 ---
 
-Trust is the only product Path actually sells. Predictions are easy
-to publish; predictions that institutional allocators can act on
-require an integrity layer behind every number. This page documents
-that layer.
+Compliance at Path is a real-time gate, not a post-hoc audit.
+Every pool surfaced to an allocator has cleared address screening
+and smart-contract risk scoring before it enters the allocation
+set, and every recommendation is re-checked against the same gates
+at emit time. This page documents the gates and the runtime
+behaviour around them.
+
+## Address screening
+
+Path screens both pool-side addresses (treasury, oracle, governance
+multisig, audit-history contributors) and allocator-side addresses
+(the wallet about to receive a recommendation) against Chainalysis.
+The screening covers sanctions lists, known illicit-finance
+indicators, and category-level risk flags. A hit on either side
+removes the pool from the allocator's available set; the gate is
+binary, no judgment-call layer.
+
+Screening runs on a continuous cadence so newly-listed addresses
+propagate into the gate without operator intervention, and a hit
+detected after a pool has been recommended fires a re-check and
+removes the pool from the active recommendation set.
+
+## Smart-contract risk scoring
+
+Every pool contract is scored through GoPlus on a continuous basis.
+The scoring covers ownership concentration, mint authority,
+upgradeability surface, oracle integrity, and a set of category
+checks tuned for lending and AMM-style yield contracts. Pools
+above the configured risk threshold are excluded from the
+allocation set; pools whose score deteriorates after admission
+are re-checked at the next scoring cycle and removed if they cross
+the threshold.
+
+## Pre-allocation gating
+
+The two screening layers are composed into a single pre-allocation
+gate. A pool enters the candidate set only if address screening
+returns clean for every associated address and smart-contract
+risk scoring returns a score within the configured tolerance.
+The gate runs ahead of Signal Mesh's ranking step; an allocator
+sees only pools that have already passed the gate, and a pool
+that fails the gate cannot surface as a recommendation regardless
+of how strong its yield signal is.
+
+## Post-trade monitoring
+
+After a recommendation is acted on, monitoring continues. The
+allocator wallet is re-screened on the same continuous cadence,
+the pool's smart-contract risk score is re-scored, and any
+drift past the configured threshold fires a re-check and flags
+the position for re-evaluation. Post-trade monitoring is what
+turns the gate from a one-shot check into a live integrity layer
+across the lifetime of an allocation.
 
 ## Regulatory posture
 
-Path is an information layer. We do not custody funds and we do not
-present allocation guidance as a managed product. The user remains
-the decision-maker. Where a specific embedding requires transaction
-crafting or signal-driven execution, the licensing route is scoped
-per partner against the embedding partner's jurisdiction.
-
-## Risk + screening stack
-
-- **Sanctions screening** runs daily against Open Sanctions data plus
-  a commercial provider's API, applied at the pool level (pool's
-  associated treasury and audit-history addresses) and at the
-  allocator level (the wallet about to receive the recommendation).
-- **Pool-level risk** combines smart-contract risk scoring, oracle
-  staleness checks, governance-action history, and a native risk
-  model that scans pool jurisdiction against the embedding partner's
-  incorporation thresholds.
-- **Custodial integration** with a major institutional custody
-  partner is in sandbox today.
-
-## Verification
-
-- Continuous-loop accuracy verifier (live today) re-computes every
-  number on every Path surface from canonical SQL every 30 minutes.
-  Drift greater than the published tolerance pages our on-call and
-  auto-files a ticket.
-- Third-party smart-contract audit is scoped against any deployment
-  that takes custody or executes transactions.
+Path is an information layer. We do not custody funds and we do
+not present allocation guidance as a managed product. The user
+remains the decision-maker. Where a specific embedding requires
+transaction crafting or signal-driven execution, the licensing
+route is scoped per partner against the embedding partner's
+jurisdiction.
 
 ## Data residency
 

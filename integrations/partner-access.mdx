@@ -1,0 +1,70 @@
+---
+title: "Partner access"
+description: "Path's intelligence layer is private and institutional. Access is scoped per partner."
+---
+
+Path's prediction stream, liquidity-impact context, historical
+accuracy registry, and rebalance-cost estimator are exposed
+through a private institutional access model. Endpoint detail,
+schema, access tokens, and rate limits are scoped inside the
+partnership conversation; this page describes the capability
+shape so a partner can decide whether the fit is right.
+
+## Who Path partners with
+
+Path is built for institutional consumers of stablecoin yield:
+custodial earn surfaces, on-chain treasury platforms, modular
+rail layers, and asset managers running multi-protocol
+allocation books. The access model is partnership-based, not
+self-serve.
+
+## Integration patterns
+
+<CardGroup cols={2}>
+  <Card title="Strategy intelligence feed" icon="signal">
+    Path's prediction stream and confidence scores are consumed by
+    the partner's allocation system. The partner drives execution;
+    Path drives the allocation decision.
+  </Card>
+  <Card title="Embedded widget" icon="rectangle-list">
+    A drop-in widget renders Path's allocation intelligence inside
+    the partner's earn or treasury surface, design-system aware.
+    The partner provides the colour tokens, typography tokens, and
+    a layout container, and the widget styles itself to match.
+  </Card>
+  <Card title="Custodian integration" icon="vault">
+    Path's intelligence layer plugs into a custodian's earn product
+    as a strategy-manager component, so the custodian's institutional
+    users see Path's allocation guidance without leaving the
+    custodian surface.
+  </Card>
+  <Card title="DON-signed signals" icon="link">
+    For partners whose risk posture requires on-chain verifiability,
+    Path publishes its prediction stream through a Chainlink Runtime
+    Environment workflow. The workflow runs in a decentralised
+    oracle network, signs the prediction tuple, and posts the result
+    on-chain. Any vault contract on any supported chain can read the
+    signed signal with cryptographic guarantees.
+  </Card>
+</CardGroup>
+
+## Deployment
+
+<CardGroup cols={2}>
+  <Card title="Hosted" icon="cloud">
+    Path operates the surface; the partner consumes it. Standard
+    SLA and rate limits documented per agreement.
+  </Card>
+  <Card title="Self-host" icon="server">
+    Available for partners with strict data-residency requirements.
+    Model artefacts ship as signed binaries; the partner runs them
+    inside their own infrastructure.
+  </Card>
+</CardGroup>
+
+## Requesting access
+
+Partner access is granted per integration. Pricing, rate limits,
+data-residency posture, and SLA terms are set in the partnership
+contract. To open a partnership conversation, contact
+[path@pathprotocol.finance](mailto:path@pathprotocol.finance).

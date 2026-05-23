@@ -27,7 +27,7 @@
   ],
   "topbarCtaButton": {
     "name": "Contact",
-    "url": "mailto:hello@pathprotocol.finance"
+    "url": "mailto:path@pathprotocol.finance"
   },
   "anchors": [],
   "navigation": [
@@ -43,10 +43,9 @@
       ]
     },
     {
-      "group": "Integration",
+      "group": "Partner Access",
       "pages": [
-        "integrations/integration-shape",
-        "integrations/api-and-widget",
+        "integrations/partner-access",
         "integrations/onboarding"
       ]
     },
@@ -71,7 +70,15 @@
   "redirects": [
     {
       "source": "/integrations/railnet-api-audit-2026-05-15",
-      "destination": "/integrations/integration-shape"
+      "destination": "/integrations/partner-access"
+    },
+    {
+      "source": "/integrations/integration-shape",
+      "destination": "/integrations/partner-access"
+    },
+    {
+      "source": "/integrations/api-and-widget",
+      "destination": "/integrations/partner-access"
     },
     {
       "source": "/core-concepts/accuracy",
