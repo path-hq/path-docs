@@ -1,0 +1,104 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "Path",
+  "colors": {
+    "primary": "#3C8850",
+    "light": "#3C8850",
+    "dark": "#2A4A48"
+  },
+  "favicon": "/favicon.svg",
+  "navigation": {
+    "groups": [
+      {
+        "group": "Overview",
+        "pages": [
+          "introduction",
+          "quickstart"
+        ]
+      },
+      {
+        "group": "Product",
+        "pages": [
+          "core-concepts/signal-mesh",
+          "core-concepts/liquidity-impact"
+        ]
+      },
+      {
+        "group": "Partner Access",
+        "pages": [
+          "integrations/partner-access",
+          "integrations/onboarding"
+        ]
+      },
+      {
+        "group": "Trust",
+        "pages": [
+          "compliance",
+          "security",
+          "contact"
+        ]
+      },
+      {
+        "group": "Help",
+        "pages": [
+          "faq"
+        ]
+      }
+    ]
+  },
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg"
+  },
+  "background": {
+    "color": {
+      "light": "#EFE6D5",
+      "dark": "#0C1A1E"
+    }
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "App",
+        "href": "https://app.pathprotocol.finance"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Contact",
+      "href": "mailto:path@pathprotocol.finance"
+    }
+  },
+  "footer": {
+    "socials": {
+      "x": "https://x.com/pathprotocolfi"
+    }
+  },
+  "fonts": {
+    "heading": {
+      "family": "Georgia"
+    },
+    "body": {
+      "family": "Inter"
+    }
+  },
+  "redirects": [
+    {
+      "source": "/integrations/railnet-api-audit-2026-05-15",
+      "destination": "/integrations/partner-access"
+    },
+    {
+      "source": "/integrations/integration-shape",
+      "destination": "/integrations/partner-access"
+    },
+    {
+      "source": "/integrations/api-and-widget",
+      "destination": "/integrations/partner-access"
+    },
+    {
+      "source": "/core-concepts/accuracy",
+      "destination": "/core-concepts/signal-mesh"
+    }
+  ]
+}
