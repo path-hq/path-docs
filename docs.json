@@ -71,7 +71,7 @@
     "primary": {
       "type": "button",
       "label": "Contact",
-      "href": "mailto:path@pathprotocol.finance"
+      "href": "mailto:hello@pathprotocol.finance"
     }
   },
   "footer": {
