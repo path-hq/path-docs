@@ -2,10 +2,14 @@
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
   "name": "Path",
+  "appearance": {
+    "default": "light",
+    "strict": true
+  },
   "colors": {
-    "primary": "#3C8850",
-    "light": "#3C8850",
-    "dark": "#2A4A48"
+    "primary": "#4F9779",
+    "light": "#75B596",
+    "dark": "#245C49"
   },
   "favicon": "/favicon.svg",
   "navigation": {
@@ -53,8 +57,8 @@
   },
   "background": {
     "color": {
-      "light": "#EFE6D5",
-      "dark": "#0C1A1E"
+      "light": "#F3F1EA",
+      "dark": "#101713"
     }
   },
   "navbar": {
@@ -76,11 +80,15 @@
     }
   },
   "fonts": {
-    "heading": {
-      "family": "Georgia"
-    },
-    "body": {
-      "family": "Inter"
+    "family": "Geist"
+  },
+  "styling": {
+    "eyebrows": "section",
+    "codeblocks": {
+      "theme": {
+        "light": "github-light",
+        "dark": "github-dark"
+      }
     }
   },
   "redirects": [

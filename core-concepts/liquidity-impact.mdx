@@ -62,11 +62,11 @@ pools).
 
 ## Current performance
 
-The post-deposit APY estimate matches realised post-deposit APY
-within ~1 percentage point in 6 cases out of 10 on backtest data, and
-the gap shrinks materially when restricted to pools where Signal Mesh
-has high signal coverage. We continue to improve this surface with
-two specific work streams:
+The post-deposit APY estimate is derived analytically from each
+protocol's published rate mechanism rather than learned, so its error
+is bounded by the accuracy of the pool-state snapshot rather than by
+model drift. We continue to improve this surface with two specific
+work streams:
 
 - Wider cohort-flow data ingestion, particularly for institutional
   allocators whose deposit clustering tells us more than the average
