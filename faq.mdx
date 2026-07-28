@@ -26,11 +26,11 @@ anything not covered here, reach out at
   </Accordion>
 
   <Accordion title="Does Path execute trades?">
-    Today, no. Path emits the signal and the rail executes the
-    rebalance. This keeps the trust boundary clean: the partner controls
-    every state-changing action, and Path is one input into their
-    allocation decision. On-chain signed signal output via the Chainlink
-    CRE workflow is in flight for partners that want verifiable signal
+    Path emits the signal and the partner rail executes the rebalance
+    today, which keeps the trust boundary clean: the partner controls
+    every state-changing action. Signal-driven execution is scoped per
+    partner. On-chain signed signal output via the Chainlink CRE
+    workflow is in flight for partners that want verifiable signal
     delivery on-chain.
   </Accordion>
 
@@ -52,23 +52,25 @@ anything not covered here, reach out at
   </Accordion>
 
   <Accordion title="Do you publish accuracy numbers?">
-    Live accuracy numbers are published on the website as a
-    real-time endpoint. We do not pin a static accuracy claim in docs
-    because the cohort, the prediction horizon, and the measurement
-    window all matter, and they update continuously. If you are
-    evaluating Path, ask us for a snapshot scoped to your use case and
-    we will pull the live numbers.
+    Forward-resolved results are published as a cumulative live record
+    in the Path app, always as edge over the relevant base rate rather
+    than a bare accuracy figure. We do not pin a static accuracy claim
+    in docs because the cohort, the prediction horizon, and the
+    measurement window all matter, and they update continuously. If you
+    are evaluating Path, ask us for a snapshot scoped to your use case
+    and we will pull the live numbers.
   </Accordion>
 
   <Accordion title="What chains do you cover?">
-    Ethereum mainnet today, with Base ingest activated 2026-05-17.
+    Ethereum mainnet today, with Base coverage rolling out.
     Additional EVM chains are on the roadmap and will activate as
     partners require coverage on them.
   </Accordion>
 
   <Accordion title="What protocols are monitored?">
-    Aave V3 and V4, Morpho Blue, Compound V3, Pendle, Kamino, and
-    Spectra. The pool list inside each protocol updates continuously as
+    Aave V3 and V4, Morpho Blue, Compound V3, and Pendle, with Kamino
+    and Spectra covered through aggregated pool data. The pool list
+    inside each protocol updates continuously as
     DeFiLlama and Path's own collectors discover new pools. The
     [Signal Mesh](/core-concepts/signal-mesh) page describes how each
     protocol's data is ingested and scored.
