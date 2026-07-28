@@ -2,6 +2,10 @@
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
   "name": "Path",
+  "appearance": {
+    "default": "light",
+    "strict": true
+  },
   "colors": {
     "primary": "#3C8850",
     "light": "#3C8850",
