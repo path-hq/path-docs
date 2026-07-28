@@ -8,7 +8,7 @@ Mintlify-hosted documentation for Path Protocol.
 npx mintlify@latest dev
 ```
 
-Mintlify reads `mint.json` for routing + theme. MDX files are
+Mintlify reads `docs.json` for routing and theme. MDX files are
 auto-discovered.
 
 ## Deploy
