@@ -11,7 +11,7 @@
     "light": "#75B596",
     "dark": "#245C49"
   },
-  "favicon": "/favicon.svg",
+  "favicon": "/favicon-passage.svg",
   "navigation": {
     "groups": [
       {
@@ -52,8 +52,8 @@
     ]
   },
   "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
+    "light": "/logo/passage-light.svg",
+    "dark": "/logo/passage-dark.svg"
   },
   "background": {
     "color": {
